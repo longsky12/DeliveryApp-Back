@@ -10,45 +10,19 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-# from pathlib import Path
-import my_settings
-# from django.core.exceptions import ImproperlyConfigured
-# import os
-# import json
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-# BASE_DIR = Path(__file__).resolve().parent.parent
-BASE_DIR = my_settings.BASE_DIR.parent
+from .my_settings import BASE_DIR, SECRET_KEY
+# from .my_settings import BASE_DIR, SECRET_KEY, DATABASES
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-
-# JSON 파일에 Secret key두고 -> 그 파일에서 SECRET_KEY를 가져와서 여기서 사용 -> JSON 파일은 .gitignore
-# secret_file = os.path.join(BASE_DIR, 'secrets.json')
-# with open(secret_file) as f:
-#     secrets = json.loads(f.read())
-
-# def get_secret(setting, secrets=secrets):
-#     """Get SECRET_KEY Value or Error"""
-#     try:
-#         return secrets[setting]
-#     except KeyError:
-#         error_msg = f"Set the {setting} environment variable."
-#         raise ImproperlyConfigured(error_msg)
-
+# print(BASE_DIR)
+# C:\Users\Jeong\Desktop\capstone\DeliveryApp-Back
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-# SECRET_KEY = get_secret("SECRET_KEY")
-SECRET_KEY = my_settings.SECRET_KEY
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -59,6 +33,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "core_app",
+    "notifications_app",
+    "orders_app",
+    "payments_app",
+    "restaurants_app",
+    "reviews_app",
+    "user_app",
 ]
 
 MIDDLEWARE = [
@@ -95,14 +76,16 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# 일단은 sqlite 사용
+# mysqldb 사용하고 싶으면 아래 주석 처리하고 
+# import 부분에서 DATABASES 추가 -> DATABASES 설정은 my_settings.py 가서 해주기
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-DATABASES = my_settings.DATABASES
 
 
 # Password validation
@@ -140,6 +123,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
