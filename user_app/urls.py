@@ -7,4 +7,5 @@ app_name='user'
 
 urlpatterns = [
     path('', views.index),
+    path('api/hello/',views.hello_rest_api, name='hello_rest_api'),
 ]

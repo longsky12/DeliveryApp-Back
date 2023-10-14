@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
     "core_app",
     "notifications_app",
     "orders_app",
@@ -41,6 +42,21 @@ INSTALLED_APPS = [
     "reviews_app",
     "user_app",
 ]
+
+# custom user 등록
+AUTH_USER_MODEL='user_app.User'
+
+# Rest framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication'
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
