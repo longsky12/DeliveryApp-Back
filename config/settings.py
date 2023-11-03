@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from .my_settings import BASE_DIR, SECRET_KEY
+from .my_settings import BASE_DIR, SECRET_KEY, ADMIN_KEY
 # from .my_settings import BASE_DIR, SECRET_KEY, DATABASES
 
 # print(BASE_DIR)
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 ]
 
 # custom user 등록
-AUTH_USER_MODEL='user_app.User'
+AUTH_USER_MODEL = 'user_app.User'
 
 # Rest framework
 REST_FRAMEWORK = {
@@ -73,7 +73,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -93,7 +93,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # 일단은 sqlite 사용
-# mysqldb 사용하고 싶으면 아래 주석 처리하고 
+# mysqldb 사용하고 싶으면 아래 주석 처리하고
 # import 부분에서 DATABASES 추가 -> DATABASES 설정은 my_settings.py 가서 해주기
 DATABASES = {
     "default": {
@@ -101,7 +101,6 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
 
 
 # Password validation

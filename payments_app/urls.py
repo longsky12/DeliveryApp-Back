@@ -3,8 +3,12 @@ from django.urls import path
 from . import views
 
 # 다른 앱과 URL 별칭이 겹치지 않도록 app name 설정
-app_name='payments'
+app_name = 'payments'
 
 urlpatterns = [
-    path('', views.index),
+    path('kakaopay/', views.kakaoPay, name='kakaopay'),
+    path('kakaopaylogic/',views.kakaoPayLogic, name='kakaopaylogic'),
+    path('paysuccess/', views.paySuccess, name='paysuccess'),
+    path('payfail/', views.payFail, name='payfail'),
+    path('paycancel/', views.payCancel, name='paycancel'),
 ]
