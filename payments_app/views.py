@@ -1,10 +1,6 @@
 from django.shortcuts import render, redirect
 import requests
-import json
 from django.conf import settings
-
-# Create your views here.
-
 
 # def payReadyAPIView(request):
 #     if request.method == "POST":
@@ -66,7 +62,6 @@ def kakaoPayLogic(request):
     request.session['tid'] = _result.get('tid')
     return redirect(next_url)
 
-
 def paySuccess(request):
     _url = 'https://kapi.kakao.com/v1/payment/approve'
     _admin_key = settings.ADMIN_KEY
@@ -83,15 +78,12 @@ def paySuccess(request):
     }
     _res = requests.post(_url,params=_params,headers=_headers)
     _result = _res.json()
-    print(_result)
+    # print(_result)
 
     if _result.get('msg'):
         return redirect('payments:payfail')
     else:
         return render(request,'payments/paySuccess.html',{'result':_result})
-
-
-
 
 def payFail(request):
     return render(request,'payments/payFail.html')
