@@ -14,7 +14,7 @@ class Order(models.Model):
         DELIVERY_COMPLETE = 'DELIVERY_COMPLETE', '배달 완료'
 
     userId = models.ForeignKey('user_app.User',on_delete=models.CASCADE)
-    restaurantId = models.ForeignKey('restaurants_app.Restaurant',on_delete=models.CASCADE, related_name='order')
+    # restaurantId = models.ForeignKey('restaurants_app.Restaurant',on_delete=models.CASCADE, related_name='order')
 
     paymentMethod = models.CharField(max_length=20,choices=PaymentMethodList.choices)
     totalPrice = models.PositiveIntegerField()
@@ -24,7 +24,7 @@ class Order(models.Model):
     status = models.CharField(max_length=255,choices=OrderStatusList.choices,default=OrderStatusList.ACCEPTING_ORDER)
 
 class OrderMenu(models.Model):
-    menu = models.ForeignKey('restaurants_app.Menu',on_delete=models.CASCADE)
+    # menu = models.ForeignKey('restaurants_app.Menu',on_delete=models.CASCADE)
     order = models.ForeignKey('Order',on_delete=models.CASCADE,related_name='orderMenu')
     name = models.CharField(max_length=255)
     quantity = models.PositiveIntegerField()

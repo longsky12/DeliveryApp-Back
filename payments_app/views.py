@@ -2,33 +2,7 @@ from django.shortcuts import render, redirect
 import requests
 from django.conf import settings
 
-# def payReadyAPIView(request):
-#     if request.method == "POST":
-#         URL = 'https://kapi.kakao.com/v1/payment/ready'
-#         headers = {
-#             "Authorization": "KakaoAK " + ADMIN_KEY,
-#             "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
-#         }
-#         params = {
-#             "cid": "TC0ONETIME",             # 테스트용 코드
-#             "partner_order_id": "123",    # 주문 번호
-#             "partner_user_id": "123",     # 유저 아이디
-#             "item_name": "치킨",          # 구매 물품 이름
-#             "quantity": "1",           # 구매 수량
-#             "total_amount": "15000",   # 구매 물품 가격
-#             "tax_free_amount": "0",    # 구매 물품 비과세
-#             "approval_url": "https://developers.kakao.com/success",
-#             "cancel_url": "https://developers.kakao.com/cancel",
-#             "fail_url": "https://developers.kakao.com/fail",
-#         }
-
-#         res = requests.post(URL, headers=headers, params=params)
-#         tid = res.json().get('tid')
-#         request.session['tid'] = tid      # 결제 승인시 사용할 tid 세션에 저장
-#         next_url = res.json().get('next_redirect_app_url')      # 결제 페이지로 넘어갈 url 저장
-#         return redirect(next_url)
-
-#     return render(request, 'payments/payTest.html')
+# render 부분 수정이 필요 -> 목표는 REST API를 만드는것
 
 def kakaoPay(request):
     return render(request,'payments/payTest.html')
@@ -53,7 +27,7 @@ def kakaoPayLogic(request):
         'fail_url':'http://127.0.0.1:8000/payment/payfail',
         'cancel_url':'http://127.0.0.1:8000/payment/paycancel'
     }
-    # 'approval_url':'http://127.0.0.1:8000/payment/kakaopay?partner_order_id=1234', 
+
     _res = requests.post(_url,params=_params,headers=_headers)
     # print(_res)
     _result = _res.json()
@@ -61,6 +35,8 @@ def kakaoPayLogic(request):
     next_url = _result.get('next_redirect_pc_url')
     request.session['tid'] = _result.get('tid')
     return redirect(next_url)
+
+    # 'approval_url':'http://127.0.0.1:8000/payment/kakaopay?partner_order_id=1234', 
 
 def paySuccess(request):
     _url = 'https://kapi.kakao.com/v1/payment/approve'
@@ -91,3 +67,32 @@ def payFail(request):
 def payCancel(request):
     return render(request,'payments/payCancel.html')
 
+'''
+def payReadyAPIView(request):
+    if request.method == "POST":
+        URL = 'https://kapi.kakao.com/v1/payment/ready'
+        headers = {
+            "Authorization": "KakaoAK " + ADMIN_KEY,
+            "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        }
+        params = {
+            "cid": "TC0ONETIME",             # 테스트용 코드
+            "partner_order_id": "123",    # 주문 번호
+            "partner_user_id": "123",     # 유저 아이디
+            "item_name": "치킨",          # 구매 물품 이름
+            "quantity": "1",           # 구매 수량
+            "total_amount": "15000",   # 구매 물품 가격
+            "tax_free_amount": "0",    # 구매 물품 비과세
+            "approval_url": "https://developers.kakao.com/success",
+            "cancel_url": "https://developers.kakao.com/cancel",
+            "fail_url": "https://developers.kakao.com/fail",
+        }
+
+        res = requests.post(URL, headers=headers, params=params)
+        tid = res.json().get('tid')
+        request.session['tid'] = tid      # 결제 승인시 사용할 tid 세션에 저장
+        next_url = res.json().get('next_redirect_app_url')      # 결제 페이지로 넘어갈 url 저장
+        return redirect(next_url)
+
+    return render(request, 'payments/payTest.html')
+'''
