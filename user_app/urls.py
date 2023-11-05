@@ -8,5 +8,5 @@ app_name='user'
 urlpatterns = [
     path('', views.index),
     path('create/', views.create_user, name='create_user'),
-    path('list/',views.user_list2.as_view(), name='user_list'),
+    path('list/',views.user_list, name='user_list'),
 ]
