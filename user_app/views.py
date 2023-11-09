@@ -24,9 +24,9 @@ def create_user(request):
 @api_view(['GET'])
 def user_list(request):
     userList = User.objects.all()
-    # serializer = UserSerializer(userList,many=True)
-    # return Response(serializer.data,status=201)
-    return Response({'data':'123'}, status=201)
+    serializer = UserSerializer(userList,many=True)
+    return Response(serializer.data,status=201)
+    # return Response({'data':'123'}, status=201)
 
 # class user_list2(APIView):
 #     def get(self,request):
