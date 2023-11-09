@@ -3,8 +3,8 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Restaurant, Menu
-from .serializers import RestaurantSerializer, MenuSerializer
+from .models import Restaurant, Menu, MenuOption
+from .serializers import RestaurantSerializer, MenuSerializer, MenuOptionSerializer
 
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -67,3 +67,26 @@ class MenuDestroyView(generics.DestroyAPIView):
     serializer_class = MenuSerializer
     
 # MenuOption CRUD
+class MenuOptionCreateView(generics.CreateAPIView):
+    queryset = MenuOption.objects.all()
+    serializer_class = MenuOptionSerializer
+
+class MenuOptionListByMenuIdView(generics.ListAPIView):
+    serializer_class = MenuOptionSerializer
+
+    def get_queryset(self):
+        menu_id = self.kwargs['menuId']
+        queryset = MenuOption.objects.filter(menuId=menu_id)
+        return queryset
+
+class MenuOptionRetrieveView(generics.RetrieveAPIView):
+    queryset = MenuOption.objects.all()
+    serializer_class = MenuOptionSerializer
+
+class MenuOptionUpdateView(generics.UpdateAPIView):
+    queryset = MenuOption.objects.all()
+    serializer_class = MenuOptionSerializer
+
+class MenuOptionDestroyView(generics.DestroyAPIView):
+    queryset = MenuOption.objects.all()
+    serializer_class = MenuOptionSerializer

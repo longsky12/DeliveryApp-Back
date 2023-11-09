@@ -25,11 +25,11 @@ urlpatterns = [
     # 특정 가게 삭제 DELETE
     path('api/restaurants/delete/<int:pk>/', views.RestaurantDestroyView.as_view(), name='restaurant-delete'),
     
-    #---------------------
+    #--------------------------------------------------------
     # 메뉴 생성 POST
     path('api/menu/create/',views.MenuCreateView.as_view(), name='menu-create'),
 
-    # 메뉴 리스트 GET
+    # 전체 가계 메뉴 리스트 GET - 과연 필요한것인가
     path('api/menu/', views.MenuListView.as_view(), name='menu-list'),
 
     # 특정 가계 메뉴 리스트 GET
@@ -44,5 +44,22 @@ urlpatterns = [
     # 특정 메뉴 삭제 DELETE
     path('api/menu/delete/<int:pk>/',views.MenuDestroyView.as_view(),name='menu-delete'),
 
+    #--------------------------------------------------------
+    # 메뉴 옵션 생성 POST
+    path('api/menuoption/create/', views.MenuOptionCreateView.as_view(), name='menuoption-create'),
+
+    # 특정 메뉴의 옵션 리스트 GET
+    path('api/menuoption/menu/<int:menuId>/',views.MenuOptionListByMenuIdView.as_view(), name='menuoption-list'),
+
+    # 특정 메뉴 옵션 1개 가져오기 GET
+    path('api/menuoption/<int:pk>/', views.MenuOptionRetrieveView.as_view(),name='menuoption-detail'),
+
+    # 특정 메뉴 업데이트(수정) PATCH
+    path('api/menuoption/update/<int:pk>/', views.MenuOptionUpdateView.as_view(),name='menuoption-update'),
+
+    # 특정 메뉴 삭제 DELETE
+    path('api/menuoption/delete/<int:pk>/',views.MenuOptionDestroyView.as_view(), name='menuoption-delete'),
+
     
+
 ]

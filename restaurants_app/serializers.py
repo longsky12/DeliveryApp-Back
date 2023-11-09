@@ -10,3 +10,8 @@ class MenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
         fields = '__all__'
+
+class MenuOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuOption
+        fields = '__all__'
