@@ -1,0 +1,11 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+<div class="row mt-5">
+    <h1 class="col-12 text-center my-5">KAKAO PAY TEST PAGE</h1>
+    <form action="{% url 'payments:kakaopaylogic' %}" method="get" class="col-12 text-center">
+      {% csrf_token %}
+      <button class="btn btn-warning">
+        <img src="{% static 'payments/large.png' %}" alt="kakaopay image">
+      </button>
+    </form>
+  </div>

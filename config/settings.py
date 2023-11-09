@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from .my_settings import BASE_DIR, SECRET_KEY
+from .my_settings import BASE_DIR, SECRET_KEY, ADMIN_KEY
 # from .my_settings import BASE_DIR, SECRET_KEY, DATABASES
 
 # print(BASE_DIR)
@@ -22,10 +22,16 @@ from .my_settings import BASE_DIR, SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
+"""
+11.04.sat
+REST API를 사용하기 위해서
+Django CORS를 설정해줘야함
+'corsheaders', 항목 추가
+"""
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -33,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
     "core_app",
     "notifications_app",
     "orders_app",
@@ -40,9 +47,38 @@ INSTALLED_APPS = [
     "restaurants_app",
     "reviews_app",
     "user_app",
+    "corsheaders",
 ]
 
+# custom user 등록
+AUTH_USER_MODEL = 'user_app.User'
+
+# Rest framework
+REST_FRAMEWORK = {
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'rest_framework.authentication.SessionAuthentication',
+    #     'rest_framework.authentication.BasicAuthentication'
+
+    # ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+
+    # ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ],
+}
+
+"""
+11.04.sat
+CORS 추가할때 middleware에도
+'corsheaders.middleware.CorsMiddleware' 추가
+"""
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -57,7 +93,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -77,7 +113,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # 일단은 sqlite 사용
-# mysqldb 사용하고 싶으면 아래 주석 처리하고 
+# mysqldb 사용하고 싶으면 아래 주석 처리하고
 # import 부분에서 DATABASES 추가 -> DATABASES 설정은 my_settings.py 가서 해주기
 DATABASES = {
     "default": {
@@ -85,7 +121,6 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
 
 
 # Password validation
@@ -131,3 +166,20 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+'''
+11.04.sat
+해당 URL에서의 요청 허용
+모든 출처에서의 요청 허용
+'''
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOWED_CREDENTIALS = True
