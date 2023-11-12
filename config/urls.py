@@ -35,13 +35,13 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls), 
-    path('user/',include('user_app.urls')),
-    path('restaurant/',include('restaurants_app.urls')),
-    path('order/',include('orders_app.urls')),
-    path('payment/',include('payments_app.urls')),
-    path('review/',include('reviews_app.urls')),
-    path('notification/',include('notifications_app.urls')),
-    path('core/',include('core_app.urls')),
+    path('',include('user_app.urls')),
+    path('',include('restaurants_app.urls')),
+    path('',include('orders_app.urls')),
+    path('',include('payments_app.urls')),
+    path('',include('reviews_app.urls')),
+    path('',include('notifications_app.urls')),
+    path('',include('core_app.urls')),
 ]
 
 urlpatterns += [
