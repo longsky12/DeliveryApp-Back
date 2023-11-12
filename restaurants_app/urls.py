@@ -11,19 +11,19 @@ urlpatterns = [
     path('', views.index), 
 
     # 가게 생성 POST
-    path('api/restaurants/create/', views.RestaurantCreateView.as_view(), name='restaurant-create'),
+    path('api/restaurant/create/', views.RestaurantCreateView.as_view(), name='restaurant-create'),
     
     # 가게 리스트 GET
-    path('api/restaurants/', views.RestaurantListView.as_view(), name='restaurant-list'),
+    path('api/restaurant/', views.RestaurantListView.as_view(), name='restaurant-list'),
     
     # 특정 가게 상세정보 GET
-    path('api/restaurants/<int:pk>/', views.RestaurantRetrieveView.as_view(), name='restaurant-detail'),
+    path('api/restaurant/<int:pk>/', views.RestaurantRetrieveView.as_view(), name='restaurant-detail'),
     
     # 특정 가게 업데이트(수정) PATCH
-    path('api/restaurants/update/<int:pk>/', views.RestaurantUpdateView.as_view(), name='restaurant-update'),
+    path('api/restaurant/update/<int:pk>/', views.RestaurantUpdateView.as_view(), name='restaurant-update'),
     
     # 특정 가게 삭제 DELETE
-    path('api/restaurants/delete/<int:pk>/', views.RestaurantDestroyView.as_view(), name='restaurant-delete'),
+    path('api/restaurant/delete/<int:pk>/', views.RestaurantDestroyView.as_view(), name='restaurant-delete'),
     
     #--------------------------------------------------------
     # 메뉴 생성 POST
