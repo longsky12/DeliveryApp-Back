@@ -9,5 +9,7 @@ urlpatterns = [
     path('', views.index),
     path('api/order/',views.OrderListCreateView.as_view(),name='order-list-create'),
     path('api/order/<int:pk>/',views.OrderRetrieveUpdateDestroyView.as_view(),name='order-retrieve-update-destroy'),
+    path('api/ordermenu/',views.OrderListCreateView.as_view(),name='order-list-create'),
+    path('api/ordermenu/<int:pk>/',views.OrderRetrieveUpdateDestroyView.as_view(),name='order-retrieve-update-destroy'),
 
 ]

@@ -13,6 +13,7 @@ from django.http import HttpResponse
 def index(request):
     return HttpResponse("주문 페이지")
 
+# Order
 # CreateAPIView only create : POST
 # ListCreateAPIView create & list : POST & GET
 class OrderListCreateView(generics.ListCreateAPIView):
@@ -24,3 +25,11 @@ class OrderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
+# OrderMenu CRUD
+class OrderMenuListCreateView(generics.ListCreateAPIView):
+    queryset = OrderMenu.objects.all()
+    serializer_class = OrderMenuSerializer
+
+class OrderMenuRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = OrderMenu.objects.all()
+    serializer_class = OrderMenuSerializer
