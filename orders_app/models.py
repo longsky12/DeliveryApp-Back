@@ -13,7 +13,7 @@ class Order(models.Model):
         DELIVERY = 'DELIVERY', '배달 중'
         DELIVERY_COMPLETE = 'DELIVERY_COMPLETE', '배달 완료'
 
-    userId = models.ForeignKey('user_app.User',on_delete=models.CASCADE)
+    # userId = models.ForeignKey('user_app.User',on_delete=models.CASCADE)
     restaurantId = models.ForeignKey('restaurants_app.Restaurant',on_delete=models.CASCADE, related_name='order')
 
     paymentMethod = models.CharField(max_length=20,choices=PaymentMethodList.choices)

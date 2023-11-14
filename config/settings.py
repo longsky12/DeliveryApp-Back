@@ -22,7 +22,7 @@ from .my_settings import BASE_DIR, SECRET_KEY, ADMIN_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    'rest_framework.authtoken',
     "core_app",
     "notifications_app",
     "orders_app",
@@ -51,7 +52,7 @@ INSTALLED_APPS = [
 ]
 
 # custom user 등록
-AUTH_USER_MODEL = 'user_app.User'
+AUTH_USER_MODEL = 'user_app.CustomUser'
 
 # Rest framework
 REST_FRAMEWORK = {

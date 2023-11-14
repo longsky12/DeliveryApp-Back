@@ -1,35 +1,32 @@
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+
+from .models import CustomUser
+from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from.serializers import RegisterSerializer, LoginSerializer
 
-from .models import User
-from .serializers import UserSerializer
-from django.shortcuts import render
-from django.http import HttpResponse
+# POST
+class RegisterView(generics.CreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = RegisterSerializer
 
-# Create your views here.
-def index(request):
-    return HttpResponse("유저 페이지")
+    def perform_create(self, serializer):
+        serializer.save(is_restaurant_admin=self.request.data.get('is_restaurant_admin',False))
 
+# POST
+class LoginView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
 
-@api_view(['POST'])
-def create_user(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        User.objects.create_user(name=request.data.get('name'),currentAddress=request.data.get('currentAddress'),phone=request.data.get('phone'))
-        return Response(serializer.data,status=201)
-    return Response(serializer.errors, status=400)
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception = True)
+        token = serializer.validated_data
+        return Response({"token":token.key}, status = status.HTTP_200_OK)
 
-@api_view(['GET'])
-def user_list(request):
-    userList = User.objects.all()
-    serializer = UserSerializer(userList,many=True)
-    return Response(serializer.data,status=201)
-    # return Response({'data':'123'}, status=201)
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import views as auth_views
 
-# class user_list2(APIView):
-#     def get(self,request):
-#         userList = User.objects.all()
-#         serializer = UserSerializer(userList,many=True)
-#         return Response(serializer.data,status=201)
+# GET
+class CustomLogoutView(auth_views.LogoutView):
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
