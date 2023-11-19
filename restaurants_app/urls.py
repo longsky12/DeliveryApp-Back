@@ -32,7 +32,11 @@ urlpatterns = [
 # DELETE  /restaurants/{restaurant_id}/menus/{menu_id}/    특정 레스토랑의 특정 메뉴 삭제
 
 # MENUOPTION
-
+# GET       /api/menus/{menu_id}/menu-options/                  특정 메뉴의 메뉴 옵션 리스트 조회
+# POST      /api/menus/{menu_id}/menu-options/                  메뉴옵션 생성
+# GET       /api/menus/{menu_id}/menu-options/{menu_option_id}/ 특정 메뉴의 메뉴 옵션 조회
+# PUT       /api/menus/{menu_id}/menu-options/{menu_option_id}/ 특정 메뉴의 메뉴 옵션 수정(전부+일부)
+# DELETE    /api/menus/{menu_id}/menu-options/{menu_option_id}/ 특정 메뉴의 메뉴 옵션 삭제
 
 """
     # viewSet 사용 이전 genericView & APIView 사용시

@@ -20,3 +20,12 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         
         # 가게 주인만 메뉴 or 메뉴 옵션 생성, 수정, 삭제 가능
         return obj.storeId.userId == request.user
+    
+class IsOwnerOrReadOnlyOption(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        menu = obj.menuId
+
+        return menu.storeId.userId == request.user

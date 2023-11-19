@@ -2,7 +2,7 @@ from rest_framework import status,generics,viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
-from .permissions import IsRestaurantAdminOrReadOnly, CustomListRetrievePermission, IsOwnerOrReadOnly
+from .permissions import IsRestaurantAdminOrReadOnly, CustomListRetrievePermission, IsOwnerOrReadOnly, IsOwnerOrReadOnlyOption
 
 
 from .models import Restaurant, Menu, MenuOption
@@ -96,13 +96,10 @@ class MenuViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         # url에서 restaurant id 가져옴
         store_id = self.kwargs.get('restaurant_id')
-        print(store_id)
         
         # 현재 로그인한 사용자의 가게를 가져옴
         user = self.request.user
         user_restaurants = user.restaurant.all()
-
-        print(user_restaurants)
 
         try:
             user_restaurant = user_restaurants.get(storeId = store_id)
@@ -179,13 +176,75 @@ class MenuViewSet(viewsets.ModelViewSet):
 # MenuOption ViewSet
 class MenuOptionViewSet(viewsets.ModelViewSet):
     serializer_class = MenuOptionSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnlyOption]
 
     def get_queryset(self):
         menu_id = self.kwargs.get('menu_id')
         return MenuOption.objects.filter(menuId=menu_id)
+    
 
+    def create(self,request,*args,**kwargs):
+        menu_id = kwargs.get('menu_id')
 
+        # 해당 메뉴 ID가 존재하는지 확인
+        try:
+            menu = Menu.objects.get(menuId=menu_id)
+        except Menu.DoesNotExist:
+            return Response({"message":"Menu not found"},status=status.HTTP_400_BAD_REQUEST)
+        
+        # 현재 로그인한 사용자의 소유 여부 확인
+        if menu.storeId.userId != request.user:
+            return Response({"message":"Permission denied"},status=status.HTTP_403_FORBIDDEN)
+        
+        request.data['menuId'] = menu_id
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def update(self,request,*args,**kwargs):
+        menu_id = kwargs.get('menu_id')
+        menu_option_id = kwargs.get('pk')
+
+        try:
+            menu_option = MenuOption.objects.get(pk=menu_option_id,menuId=menu_id)
+            menu = menu_option.menuId
+        except MenuOption.DoesNotExist:
+            return Response({"message":"Menu Option not found"},status=status.HTTP_400_BAD_REQUEST)
+
+        menu = menu_option.menuId
+
+        # 현재 로그인한 사용자 소유 여부 확인
+        if menu.storeId.userId != request.user:
+            return Response({"message":"Permission denied"},status=status.HTTP_403_FORBIDDEN)
+        
+        request.data['menuId'] = menu_id
+        request.data['menuOptionId'] = menu_option_id
+
+        serializer = self.get_serializer(instance=menu_option,data=request.data,partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+    
+    def destroy(self, request, *args, **kwargs):
+        menu_id = kwargs.get('menu_id')
+        menu_option_id = kwargs.get('pk')
+
+        try:
+            menu_option = MenuOption.objects.get(pk=menu_option_id,menuId=menu_id)
+            menu = menu_option.menuId
+        except MenuOption.DoesNotExist:
+            return Response({"message":"Menu Option not found"},status=status.HTTP_400_BAD_REQUEST)
+
+        if menu.storeId.userId != request.user:
+            return Response({"message":"Permission denied"},status=status.HTTP_403_FORBIDDEN)
+         
+        menu_option.delete()
+
+        return Response({"message":"Menu Option deleted successfully"},status=status.HTTP_204_NO_CONTENT)
 
 '''
 # Restaurant CRUD
