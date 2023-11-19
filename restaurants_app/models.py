@@ -2,7 +2,7 @@ from django.db import models
 
 class Restaurant(models.Model):
     storeId = models.BigAutoField(primary_key=True)
-    # userId = models.ForeignKey('user_app.User',related_name='restaurant',on_delete=models.CASCADE)
+    userId = models.ForeignKey('user_app.CustomUser',related_name='restaurant',on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     category = models.SmallIntegerField()
     address = models.CharField(max_length=255)

@@ -1,3 +1,8 @@
+# TEST 용도
+from django.http import JsonResponse
+from django.views import View
+
+
 
 from .models import CustomUser
 from rest_framework import generics, status
@@ -30,3 +35,10 @@ class CustomLogoutView(auth_views.LogoutView):
     @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+    
+# Test 용도
+class CustomUserListView(View):
+    def get(self,request,*args,**kwargs):
+        users = CustomUser.objects.all()
+        user_list = list(users.values())
+        return JsonResponse({'users':user_list})

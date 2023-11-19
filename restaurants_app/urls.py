@@ -1,14 +1,41 @@
 from rest_framework import routers
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 
 # 다른 앱과 URL 별칭이 겹치지 않도록 app name 설정
 app_name='restaurants'
 
+router = routers.DefaultRouter()
+router.register(r'restaurants',views.RestaurantViewSet, basename='restaurants')
+router.register(r'restaurants/(?P<restaurant_id>\d+)/menus',views.MenuViewSet, basename='menus')
+router.register(r'menus/(?P<menu_id>\d+)/menu-options',views.MenuOptionViewSet,basename='menu-options')
 
 urlpatterns = [
     path('', views.index), 
+    path('api/',include(router.urls)),
+]
+
+# RESTAURANT
+# GET    /restaurants/:         모든 레스토랑 리스트를 가져옴
+# POST   /restaurants/:         새로운 레스토랑을 생성함
+# GET    /restaurants/{id}/:    특정 레스토랑의 세부 정보를 가져옴
+# PUT    /restaurants/{id}/:    특정 레스토랑을 수정함
+# DELETE /restaurants/{id}/:    특정 레스토랑을 삭제함
+
+# MENU
+# POST    /restaurants/{restaurant_id}/menus/              메뉴 생성(Create Menu)
+# GET     /restaurants/{restaurant_id}/menus/              특정 레스토랑의 모든 메뉴 조회
+# GET     /restaurants/{restaurant_id}/menus/{menu_id}/    특정 레스토랑의 특정 메뉴 조회
+# PUT     /restaurants/{restaurant_id}/menus/{menu_id}/    특정 레스토랑의 특정 메뉴 수정
+# PATCH   /restaurants/{restaurant_id}/menus/{menu_id}/    특정 레스토랑의 특정 메뉴 일부 수정
+# DELETE  /restaurants/{restaurant_id}/menus/{menu_id}/    특정 레스토랑의 특정 메뉴 삭제
+
+# MENUOPTION
+
+
+"""
+    # viewSet 사용 이전 genericView & APIView 사용시
 
     # 가게 생성 POST
     path('api/restaurant/create/', views.RestaurantCreateView.as_view(), name='restaurant-create'),
@@ -24,7 +51,7 @@ urlpatterns = [
     
     # 특정 가게 삭제 DELETE
     path('api/restaurant/delete/<int:pk>/', views.RestaurantDestroyView.as_view(), name='restaurant-delete'),
-    
+
     #--------------------------------------------------------
     # 메뉴 생성 POST
     path('api/menu/create/',views.MenuCreateView.as_view(), name='menu-create'),
@@ -59,7 +86,4 @@ urlpatterns = [
 
     # 특정 메뉴 삭제 DELETE
     path('api/menuoption/delete/<int:pk>/',views.MenuOptionDestroyView.as_view(), name='menuoption-delete'),
-
-    
-
-]
+"""

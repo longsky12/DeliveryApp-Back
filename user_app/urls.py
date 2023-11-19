@@ -1,5 +1,5 @@
 from django.urls import path
-from django.contrib.auth import views as auth_views
+# from django.contrib.auth import views as auth_views
 from . import views
 
 # 다른 앱과 URL 별칭이 겹치지 않도록 app name 설정
@@ -14,4 +14,6 @@ urlpatterns = [
 
     # csrf 토큰이 필요없는 로그아웃 실제 서비스시 사용 X GET
     path('logout/',views.CustomLogoutView.as_view(),name='logout'),
+
+    path('user-list/',views.CustomUserListView.as_view(),name='user_list'),
 ]
