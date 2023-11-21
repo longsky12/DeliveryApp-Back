@@ -14,4 +14,9 @@ urlpatterns = [
     path('paycancel/', views.payCancel, name='paycancel'),
     path('api/payment/',views.PaymentViewSet.as_view({'post':'create'}),name='payment-create'),
     path('api/payment/approval/',views.PaymentApprovalViewSet.as_view({'post':'create'}),name='payment-approve'),
+
+    path('index/',views.index),
+    path('window/',views.window),
+    path('success/',views.success),
+    path('fail/',views.fail),
 ]

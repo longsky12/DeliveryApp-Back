@@ -55,3 +55,6 @@ def get_payment_secrets(setting, secrets=admin_key):
 
 
 ADMIN_KEY = get_payment_secrets("ADMIN_KEY")
+
+TOSS_PAYMENTS_SECRET_KEY = get_payment_secrets("TOSS_PAYMENTS_SECRET_KEY")
+TOSS_PAYMENTS_CLIENT_KEY = get_payment_secrets("TOSS_PAYMENTS_CLIENT_KEY")
