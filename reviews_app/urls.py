@@ -6,5 +6,8 @@ from . import views
 app_name='reviews'
 
 urlpatterns = [
-    path('', views.index),
+    path('api/reviews/',views.ReviewsListCreateView.as_view(), name='review-list-create'),
+    path('api/reviews/<int:pk>/',views.ReviewsRetrieveUpdateDestroyView.as_view(), name='review-retrieve-update-destroy'),
+    path('api/restaurants/<int:restaurant_id>/reviews/',views.RestaurantReviewListAPIView.as_view(), name='restaurant-review-list'),
+    
 ]
