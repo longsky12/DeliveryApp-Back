@@ -26,9 +26,9 @@ class PaymentViewSet(viewsets.ViewSet):
             'total_amount':'1750000',
             'vat_amount':'175000',
             'tax_free_amount':'0',
-            'approval_url':'http://127.0.0.1:8000/payment/paysuccess',
-            'fail_url':'http://127.0.0.1:8000/payment/payfail',
-            'cancel_url':'http://127.0.0.1:8000/payment/paycancel'
+            'approval_url':'http://127.0.0.1:8000/paysuccess',
+            'fail_url':'http://127.0.0.1:8000/payfail',
+            'cancel_url':'http://127.0.0.1:8000/paycancel'
         }
 
         _res = requests.post(_url,params=_params,headers=_headers)
@@ -91,9 +91,9 @@ def kakaoPayLogic(request):
         'total_amount':'1750000',
         'vat_amount':'175000',
         'tax_free_amount':'0',
-        'approval_url':'http://127.0.0.1:8000/payment/paysuccess',
-        'fail_url':'http://127.0.0.1:8000/payment/payfail',
-        'cancel_url':'http://127.0.0.1:8000/payment/paycancel'
+        'approval_url':'http://127.0.0.1:8000/paysuccess',
+        'fail_url':'http://127.0.0.1:8000/payfail',
+        'cancel_url':'http://127.0.0.1:8000/paycancel'
     }
 
     _res = requests.post(_url,data=_params,headers=_headers)
@@ -127,13 +127,13 @@ def paySuccess(request):
     if _result.get('msg'):
         return redirect('payments:payfail')
     else:
-        return render(request,'payments/paySuccess.html',{'result':_result})
+        return render(request,'paySuccess.html',{'result':_result})
 
 def payFail(request):
-    return render(request,'payments/payFail.html')
+    return render(request,'payFail.html')
 
 def payCancel(request):
-    return render(request,'payments/payCancel.html')
+    return render(request,'payCancel.html')
 
 
 

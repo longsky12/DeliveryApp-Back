@@ -12,8 +12,9 @@ urlpatterns = [
     path('paysuccess/', views.paySuccess, name='paysuccess'),
     path('payfail/', views.payFail, name='payfail'),
     path('paycancel/', views.payCancel, name='paycancel'),
-    path('api/payment/',views.PaymentViewSet.as_view({'post':'create'}),name='payment-create'),
-    path('api/payment/approval/',views.PaymentApprovalViewSet.as_view({'post':'create'}),name='payment-approve'),
+    
+    # path('api/payment/',views.PaymentViewSet.as_view({'post':'create'}),name='payment-create'),
+    # path('api/payment/approval/',views.PaymentApprovalViewSet.as_view({'post':'create'}),name='payment-approve'),
 
     path('index/',views.index),
     path('window/',views.window),
