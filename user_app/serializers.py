@@ -7,6 +7,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth import authenticate
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required = True,
@@ -47,12 +48,20 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(required = True)
     password = serializers.CharField(required = True, write_only = True)
-
     def validate(self, data):
         user = authenticate(**data)
+        print(user)
         if user:
             token = Token.objects.get(user=user)
+            print(token)
             return token
         raise serializers.ValidationError(
             {"error":"Unable to log in with provided credentials"}
         )
+
+
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id','username','is_restaurant_admin']

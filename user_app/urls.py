@@ -15,5 +15,5 @@ urlpatterns = [
     # csrf 토큰이 필요없는 로그아웃 실제 서비스시 사용 X GET
     path('logout/',views.CustomLogoutView.as_view(),name='logout'),
 
-    path('user-list/',views.CustomUserListView.as_view(),name='user_list'),
+    path('user/',views.CustomUserListView.as_view(),name='user_list'),
 ]
