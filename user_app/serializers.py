@@ -1,5 +1,4 @@
 # User 부분을 CutomUser로 바꿔주고 필드 채워주기
-from .models import CustomUser
 from django.contrib.auth.password_validation import validate_password
 
 from rest_framework import serializers
@@ -7,6 +6,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth import authenticate
 
+from .models import CustomUser,Address
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -65,3 +65,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id','username','is_restaurant_admin']
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = '__all__'

@@ -2,14 +2,16 @@
 from django.http import JsonResponse
 from django.views import View
 
-from rest_framework.authtoken.views import ObtainAuthToken
-
-from .models import CustomUser
 from rest_framework import generics, status
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
-from.serializers import RegisterSerializer, LoginSerializer, CustomUserSerializer
+
+from.serializers import RegisterSerializer, LoginSerializer, CustomUserSerializer, AddressSerializer
+from .models import CustomUser, Address
+from .permissions import UserPermission
 
 # POST
 class RegisterView(generics.CreateAPIView):
@@ -56,3 +58,43 @@ class CustomUserListView(generics.ListAPIView):
 
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+    
+
+class AddressListCreateView(generics.ListCreateAPIView):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+    authentication_classes=[TokenAuthentication]
+    permission_classes = [UserPermission]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Address.objects.filter(userId=user)
+    
+    def create(self,request,*args,**kwargs):
+        if not request.user.is_restaurant_admin:
+            token = request.headers.get('Authorization').split(' ')[1]
+            try:
+                authorizedToken = Token.objects.get(key=token)
+                user = authorizedToken.user
+                userId = user.pk
+                request.data['userId']=userId
+            except Token.DoesNotExist:
+                return Response({"message":"Invalid token"},status=status.HTTP_401_UNAUTHORIZED)
+            except Exception as e:
+                return Response({"message":f"An error occured:{str(e)}"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response({"message":"식당 관리자 계정으로는 주소를 추가 할 수 없습니다."},status=status.HTTP_403_FORBIDDEN)
+        return super().create(request,*args,**kwargs)
+    
+class AddressRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+    authentication_classes=[TokenAuthentication]
+    permission_classes=[UserPermission]
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        return Response({"message": "주소가 성공적으로 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
