@@ -5,8 +5,8 @@ from rest_framework.authentication import TokenAuthentication
 from .permissions import IsRestaurantAdminOrReadOnly, CustomListRetrievePermission, IsOwnerOrReadOnly, IsOwnerOrReadOnlyOption
 
 
-from .models import Restaurant, Menu, MenuOption
-from .serializers import RestaurantSerializer, MenuSerializer, MenuOptionSerializer
+from .models import Restaurant, Menu, MenuOption, Dib
+from .serializers import RestaurantSerializer, MenuSerializer, MenuOptionSerializer, DibSerializer
 
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -245,6 +245,21 @@ class MenuOptionViewSet(viewsets.ModelViewSet):
         menu_option.delete()
 
         return Response({"message":"Menu Option deleted successfully"},status=status.HTTP_204_NO_CONTENT)
+
+
+
+class dibListCreateView(generics.ListCreateAPIView):
+    queryset = Dib.objects.all()
+    serializer_class = DibSerializer
+
+    
+
+
+
+
+
+
+
 
 '''
 # Restaurant CRUD

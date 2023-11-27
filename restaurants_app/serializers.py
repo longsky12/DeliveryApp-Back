@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Restaurant, Menu, MenuOption
+from .models import Restaurant, Menu, MenuOption, Dib
 
 class RestaurantSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,3 +15,8 @@ class MenuOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = MenuOption
         fields = '__all__'
+
+class DibSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dib
+        fields = ['userId','storeId','status']

@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth import get_user_model
 class Restaurant(models.Model):
     storeId = models.BigAutoField(primary_key=True)
     userId = models.ForeignKey('user_app.CustomUser',related_name='restaurant',on_delete=models.CASCADE)
@@ -63,3 +63,14 @@ class MenuOption(models.Model):
 
     def __str__(self):
         return self.option
+    
+
+class Dib(models.Model):
+    userId = models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
+    storeId = models.ForeignKey('Restaurant',on_delete=models.CASCADE)
+    createdDate = models.DateTimeField(auto_now_add=True)
+    modifiedDate = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=255,default='일반')
+
+    class Meta:
+        unique_together = [['userId','storeId']]
