@@ -10,9 +10,8 @@ router = routers.DefaultRouter()
 router.register(r'restaurants',views.RestaurantViewSet, basename='restaurants')
 router.register(r'restaurants/(?P<restaurant_id>\d+)/menus',views.MenuViewSet, basename='menus')
 router.register(r'menus/(?P<menu_id>\d+)/menu-options',views.MenuOptionViewSet,basename='menu-options')
-
+router.register(r'dibs',views.DibViewSet, basename='dibs')
 urlpatterns = [
-    path('', views.index), 
     path('api/',include(router.urls)),
 ]
 
@@ -39,8 +38,8 @@ urlpatterns = [
 # DELETE    /api/menus/{menu_id}/menu-options/{menu_option_id}/ 특정 메뉴의 메뉴 옵션 삭제
 
 # DIB
-
-
+# POST      /api/dibs/                                      좋아요 생성 및, 요청시 status값을 '일반'<->'활성화 변화 / 활성화 인경우 좋아요 표시가 눌러진 상태
+# GET       /api/dibs/get_likes_count?storeId=<storeId>     쿼리문으로 들어온 storeId 값의 가게의 전체 좋아요 수를 리턴
 
 """
     # viewSet 사용 이전 genericView & APIView 사용시

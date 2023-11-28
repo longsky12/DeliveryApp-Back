@@ -59,13 +59,14 @@ class MenuOption(models.Model):
     # 수정일
     modifiedDate = models.DateTimeField(auto_now=True)
     # 상태
-    status = models.CharField(max_length=255, default="일반")
+    status = models.CharField(max_length=255, default="활성화")
 
     def __str__(self):
         return self.option
     
 
 class Dib(models.Model):
+    dibId = models.BigAutoField(primary_key=True)
     userId = models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
     storeId = models.ForeignKey('Restaurant',on_delete=models.CASCADE)
     createdDate = models.DateTimeField(auto_now_add=True)
@@ -74,3 +75,6 @@ class Dib(models.Model):
 
     class Meta:
         unique_together = [['userId','storeId']]
+
+    def __str__(self):
+        return f"userId: {self.userId} - storeId: {self.storeId}"

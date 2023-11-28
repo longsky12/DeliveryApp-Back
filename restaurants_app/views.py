@@ -1,4 +1,5 @@
 from rest_framework import status,generics,viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
@@ -10,9 +11,6 @@ from .serializers import RestaurantSerializer, MenuSerializer, MenuOptionSeriali
 
 from django.shortcuts import render
 from django.http import HttpResponse
-
-def index(request):
-    return HttpResponse("레스토랑 페이지")
 
 # Authentication - 사용자의 신원(회원/비회원/관리자 등을 확인)을 확인하는 절차
 # Permission - 특정 서비스를 어느 정도로 이용할 수 있는지에 대한 권한
@@ -246,13 +244,41 @@ class MenuOptionViewSet(viewsets.ModelViewSet):
 
         return Response({"message":"Menu Option deleted successfully"},status=status.HTTP_204_NO_CONTENT)
 
-
-
-class dibListCreateView(generics.ListCreateAPIView):
+# DibViewSet
+class DibViewSet(viewsets.ModelViewSet):
     queryset = Dib.objects.all()
     serializer_class = DibSerializer
+    authentication_classes=[TokenAuthentication]
+    # permission_classes=[]
 
+    def create(self,request, *args,**kwargs):
+        storeId = request.data.get('storeId')
+        existing_dib = Dib.objects.filter(userId=request.user, storeId=storeId).first()
+
+        if existing_dib:
+            if existing_dib.status=='활성화':
+                existing_dib.status = '일반'
+                existing_dib.save()
+                serializer = DibSerializer(existing_dib)
+                return Response({"data":serializer.data,"message":"좋아요를 누릅니다."},status=status.HTTP_200_OK)
+            else:
+                existing_dib.status = '활성화'
+                existing_dib.save()
+                serializer = DibSerializer(existing_dib)
+                return Response({"data":serializer.data,"message":"좋아요를 취소합니다."},status=status.HTTP_400_BAD_REQUEST)
+        else:
+            data = request.data.copy()
+            data['userId'] = request.user.id
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
     
+    @action(detail=False,methods=['get'], authentication_classes=[],permission_classes=[])
+    def get_likes_count(self,request,*args,**kwargs):
+        storeId = request.query_params.get('storeId')
+        active_likes_count = Dib.objects.filter(storeId=storeId,status='활성화').count()
+        return Response({'좋아요한 수 ':active_likes_count})
 
 
 
@@ -260,6 +286,39 @@ class dibListCreateView(generics.ListCreateAPIView):
 
 
 
+
+
+
+
+# # CreateAPIView 사용
+# class dibCreateView(generics.CreateAPIView):
+#     serializer_class = DibSerializer
+
+#     authentication_classes=[TokenAuthentication]
+#     # permission_classes=[]
+
+#     def create(self,request, *args,**kwargs):
+#         storeId = request.data.get('storeId')
+#         existing_dib = Dib.objects.filter(userId=request.user, storeId=storeId).first()
+
+#         if existing_dib:
+#             if existing_dib.status=='활성화':
+#                 existing_dib.status = '일반'
+#                 existing_dib.save()
+#                 serializer = DibSerializer(existing_dib)
+#                 return Response({"data":serializer.data,"message":"좋아요를 누릅니다."},status=status.HTTP_200_OK)
+#             else:
+#                 existing_dib.status = '활성화'
+#                 existing_dib.save()
+#                 serializer = DibSerializer(existing_dib)
+#                 return Response({"data":serializer.data,"message":"좋아요를 취소합니다."},status=status.HTTP_400_BAD_REQUEST)
+#         else:
+#             data = request.data.copy()
+#             data['userId'] = request.user.id
+#             serializer = self.get_serializer(data=data)
+#             serializer.is_valid(raise_exception=True)
+#             serializer.save()
+#             return Response(serializer.data,status=status.HTTP_201_CREATED)
 
 '''
 # Restaurant CRUD
