@@ -2,6 +2,7 @@ from rest_framework import status,generics,viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from .permissions import IsRestaurantAdminOrReadOnly, CustomListRetrievePermission, IsOwnerOrReadOnly, IsOwnerOrReadOnlyOption
 
@@ -249,7 +250,7 @@ class DibViewSet(viewsets.ModelViewSet):
     queryset = Dib.objects.all()
     serializer_class = DibSerializer
     authentication_classes=[TokenAuthentication]
-    # permission_classes=[]
+    permission_classes=[IsAuthenticated]
 
     def create(self,request, *args,**kwargs):
         storeId = request.data.get('storeId')
