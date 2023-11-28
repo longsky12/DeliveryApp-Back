@@ -29,7 +29,7 @@ class Order(models.Model):
     storeId = models.ForeignKey('restaurants_app.Restaurant',on_delete=models.CASCADE, related_name='order')
     userId = models.ForeignKey('user_app.CustomUser',on_delete=models.CASCADE)
 
-    # cartId = models.ForeignKey(Cart,on_delete=models.CASCADE)
+    cartId = models.ForeignKey(Cart,on_delete=models.CASCADE)
 
     paymentMethod = models.CharField(max_length=255)
     totalPrice = models.PositiveIntegerField()

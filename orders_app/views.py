@@ -43,6 +43,8 @@ class OrderListCreateView(generics.ListCreateAPIView):
             return Response({"message":"식당 관리자 계정으로는 주문할 수 없습니다."},status=status.HTTP_403_FORBIDDEN)
         return super().create(request,*args,**kwargs)
 
+
+
 #=============================================================
 # RetrieveUpdateDestroyAPIView : POST, PATCH, DELETE
 class OrderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
@@ -55,6 +57,13 @@ class OrderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         else:
             permission_class=[UserPermission]
         return [permission() for permission in permission_class]
+    
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer=self.get_serializer(instance,data=request.data,partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 #=============================================================
 # Cart Create View
