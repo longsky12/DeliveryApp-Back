@@ -59,7 +59,8 @@ class CustomUserListView(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
     
-
+# ============================================================
+# Address List Create View
 class AddressListCreateView(generics.ListCreateAPIView):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
@@ -85,7 +86,9 @@ class AddressListCreateView(generics.ListCreateAPIView):
         else:
             return Response({"message":"식당 관리자 계정으로는 주소를 추가 할 수 없습니다."},status=status.HTTP_403_FORBIDDEN)
         return super().create(request,*args,**kwargs)
-    
+
+# ============================================================
+# Address Retrieve Update Destroy View
 class AddressRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer

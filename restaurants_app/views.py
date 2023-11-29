@@ -16,6 +16,7 @@ from django.http import HttpResponse
 # Authentication - 사용자의 신원(회원/비회원/관리자 등을 확인)을 확인하는 절차
 # Permission - 특정 서비스를 어느 정도로 이용할 수 있는지에 대한 권한
 
+# ============================================================
 # Restaurant ViewSet
 class RestaurantViewSet(viewsets.ViewSet):
     authentication_classes = [TokenAuthentication]
@@ -79,6 +80,8 @@ class RestaurantViewSet(viewsets.ViewSet):
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
 
+
+# ============================================================
 # MENU VIEWSET
 class MenuViewSet(viewsets.ModelViewSet):
     serializer_class = MenuSerializer
@@ -172,6 +175,7 @@ class MenuViewSet(viewsets.ModelViewSet):
 
         return Response({"message": "Object deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
+# ============================================================
 # MenuOption ViewSet
 class MenuOptionViewSet(viewsets.ModelViewSet):
     serializer_class = MenuOptionSerializer
@@ -245,6 +249,8 @@ class MenuOptionViewSet(viewsets.ModelViewSet):
 
         return Response({"message":"Menu Option deleted successfully"},status=status.HTTP_204_NO_CONTENT)
 
+
+# ============================================================
 # DibViewSet
 class DibViewSet(viewsets.ModelViewSet):
     queryset = Dib.objects.all()

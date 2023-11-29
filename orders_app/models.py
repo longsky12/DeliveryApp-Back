@@ -39,6 +39,9 @@ class Order(models.Model):
     createdDate = models.DateTimeField(auto_now_add=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 
+    def has_review(self):
+        return self.order_reviews.exists()
+
     def __str__(self):
         return f"Order ID: {self.orderId} - Store: {self.storeId} - User: {self.userId}"
     

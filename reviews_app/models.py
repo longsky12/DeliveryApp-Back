@@ -5,6 +5,7 @@ class Reviews(models.Model):
     storeId = models.ForeignKey('restaurants_app.Restaurant',related_name='restaurant_reviews', on_delete=models.CASCADE)
     userId = models.ForeignKey('user_app.CustomUser',related_name='user_reviews', on_delete=models.CASCADE)
     menuId = models.ForeignKey('restaurants_app.Menu',related_name='menu_reviews', on_delete=models.SET_NULL, null=True, blank=True)
+    orderId = models.ForeignKey('orders_app.Order',related_name='order_reviews',on_delete=models.CASCADE)
     rating = models.IntegerField()
     content = models.CharField(max_length=255, blank=True, null=True)
     reviewPictureUrl = models.TextField(blank=True, null=True)

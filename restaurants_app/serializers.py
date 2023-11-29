@@ -19,4 +19,4 @@ class MenuOptionSerializer(serializers.ModelSerializer):
 class DibSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dib
-        fields = ['userId','storeId','status']
+        fields = ['dibId','userId','storeId','status']
