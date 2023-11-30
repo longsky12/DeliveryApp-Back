@@ -23,7 +23,7 @@ class Restaurant(models.Model):
     status = models.CharField(max_length=255, default="일반")
 
     def __str__(self):
-        return self.name
+        return f'storeId : {self.storeId} - userId : {self.userId} - name : {self.name}'
 
 class Menu(models.Model):
     # 메뉴 ID, PK
@@ -40,7 +40,7 @@ class Menu(models.Model):
     status = models.CharField(max_length=255, default="일반")
 
     def __str__(self):
-        return self.name
+        return f'menuId : {self.menuId} - storeId : {self.storeId} - name : {self.name}'
 
 
 class MenuOption(models.Model):
@@ -62,7 +62,7 @@ class MenuOption(models.Model):
     status = models.CharField(max_length=255, default="활성화")
 
     def __str__(self):
-        return self.option
+        return f'menuOptionId: {self.menuOptionId} - menuId: {self.menuId} - option: {self.option}'
     
 
 class Dib(models.Model):
