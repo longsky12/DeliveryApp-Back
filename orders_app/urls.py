@@ -8,6 +8,7 @@ app_name='orders'
 urlpatterns = [
     path('api/order/',views.OrderListCreateView.as_view(),name='order-list-create'),
     path('api/order/<int:pk>/',views.OrderRetrieveUpdateDestroyView.as_view(),name='order-retrieve-update-destroy'),
+    path('api/order/<int:pk>/update-status/',views.updateOrderStatus,name='update-order-status'),
     path('api/cart/',views.CartCreateView.as_view(), name='cart-create'),
     path('api/cart/<int:pk>/',views.CartRetrieveDestroyView.as_view(), name='cart-retrieve-update-destroy'),
     path('api/cartitem/',views.CartItemListCreateView.as_view(),name='cartitem-list-create'),

@@ -25,6 +25,13 @@ class CartItem(models.Model):
         return f'{self.storeId} - {self.menuId}'
 
 class Order(models.Model):
+    STATUS_CHOICES = [
+        ('주문 확인','주문 확인'),
+        ('조리중','조리중'),
+        ('배달중','배달중'),
+        ('배달 완료','배달 완료'),
+    ]
+
     orderId = models.BigAutoField(primary_key=True)
     storeId = models.ForeignKey('restaurants_app.Restaurant',on_delete=models.CASCADE, related_name='order')
     userId = models.ForeignKey('user_app.CustomUser',on_delete=models.CASCADE)
@@ -34,7 +41,7 @@ class Order(models.Model):
     paymentMethod = models.CharField(max_length=255)
     totalPrice = models.PositiveIntegerField()
     requestMsg = models.CharField(max_length=255,default="(없음)")
-    status = models.CharField(max_length=255,default='정상')
+    status = models.CharField(max_length=255,choices=STATUS_CHOICES, default='주문 확인')
 
     createdDate = models.DateTimeField(auto_now_add=True)
     modifiedDate = models.DateTimeField(auto_now=True)

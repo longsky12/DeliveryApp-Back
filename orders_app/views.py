@@ -1,6 +1,6 @@
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 # from rest_framework.exceptions import PermissionDenied
@@ -185,3 +185,21 @@ class CartItemRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
         instance.delete()
         return Response({"message":"장바구니에 있던 메뉴를 삭제했습니다"},status=status.HTTP_204_NO_CONTENT)
+    
+
+#================================================
+# Order의 status를 변경하는 로직
+@api_view(['PUT'])
+def updateOrderStatus(request,orderId):
+    try:
+        order = Order.objects.get(orderId=orderId)
+    except Order.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    newStatus = request.data.get('newStatus')
+
+    order.status = newStatus
+    order.save()
+
+    return Response({"message":"주문 상태 업데이트 완료"},status=status.HTTP_200_OK)
+
