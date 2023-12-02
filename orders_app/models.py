@@ -30,6 +30,7 @@ class Order(models.Model):
         ('조리중','조리중'),
         ('배달중','배달중'),
         ('배달 완료','배달 완료'),
+        ('거절','거절'),
     ]
 
     orderId = models.BigAutoField(primary_key=True)
