@@ -18,3 +18,15 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.addressId} - {self.address}"
+    
+
+class Reward(models.Model):
+    rewardId = models.BigAutoField(primary_key=True)
+    userId = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    reward = models.PositiveBigIntegerField(default=0)
+    createdDate = models.DateTimeField(auto_now_add=True)
+    modifiedDate = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=255,default='일반')   
+    
+    def __str__(self):
+        return f"rewardId : {self.rewardId} - userId : {self.userId} - reward : {self.reward}"

@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth import authenticate
 
-from .models import CustomUser,Address
+from .models import CustomUser,Address,Reward
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -70,4 +70,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
+        fields = '__all__'
+
+class RewardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reward
         fields = '__all__'

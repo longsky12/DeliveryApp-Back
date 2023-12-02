@@ -2,15 +2,15 @@
 from django.http import JsonResponse
 from django.views import View
 
-from rest_framework import generics, status
+from rest_framework import generics, status,permissions
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 
-from.serializers import RegisterSerializer, LoginSerializer, CustomUserSerializer, AddressSerializer
-from .models import CustomUser, Address
+from .serializers import RegisterSerializer, LoginSerializer, CustomUserSerializer, AddressSerializer, RewardSerializer
+from .models import CustomUser, Address, Reward
 from .permissions import UserPermission
 
 # POST
@@ -101,3 +101,80 @@ class AddressRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def perform_destroy(self, instance):
         instance.delete()
         return Response({"message": "주소가 성공적으로 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+    
+
+# ============================================================
+# Reward Create View
+class RewardCreateView(generics.CreateAPIView):
+    serializer_class = RewardSerializer
+    authentication_classes=[TokenAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        token = request.headers.get('Authorization').split(' ')[1]
+        try:
+            authorizedToken = Token.objects.get(key=token)
+            user = authorizedToken.user
+
+            existing_model = Reward.objects.filter(userId=user.pk).exists()
+            if existing_model:
+                return Response({"message":"이미 리워드를 개설했습니다."},status=status.HTTP_400_BAD_REQUEST)
+            
+            if user.is_authenticated and user.is_restaurant_admin:
+                return Response({"message": "사장님 계정으로는 Reward 모델을 만들 수 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+
+            userId = user.pk
+            request.data['userId'] = userId
+
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data,status=status.HTTP_201_CREATED,headers=headers)
+        except Token.DoesNotExist:
+            return Response({"message":"Invalid token"},status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response({"message":f"An error occured:{str(e)}"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+# ============================================================
+# Reward Retrieve Update Destroy View        
+class RewardRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = RewardSerializer
+    queryset = Reward.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def income_points(self,instance,income):
+        instance.reward += int(income)
+        instance.save()
+
+    def outcome_points(self,instance,outcome):
+        if instance.reward >= int(outcome):
+            instance.reward -= int(outcome)
+            instance.save()
+            return True
+        return False
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        operation = request.data.get('operation')
+        points = request.data.get('points')
+
+        if operation == 'income':
+            self.income_points(instance, points)
+        elif operation == 'outcome':
+            if self.outcome_points(instance, points):
+                serializer = self.get_serializer(instance)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "포인트가 부족합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
