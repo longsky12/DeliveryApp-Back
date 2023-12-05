@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant List</title>
+    <!-- Add necessary stylesheets or CDN links for styling -->
+</head>
+<body>
+    <!--검색창 있을 자리-->
+    <h1>Restaurant List</h1>
+
+    <div>
+        sort & logo & filter
+    </div>
+    
+    <ul>
+        {% for restaurant in restaurants %}
+            <li>
+                <img src="https://source.unsplash.com/200x200/?cat">
+                <p>{{ restaurant.name }}</p>
+                <p><strong>Minimum Delivery Price:</strong> {{ restaurant.minDeliveryPrice }}</p>
+                <p><strong>Maximum Delivery Time:</strong> {{ restaurant.maxDeliveryTime }}</p>
+                
+                <!-- Add other restaurant information fields as needed -->
+            </li>
+        {% endfor %}
+    </ul>
+    
+    <div>
+        Home & Profile
+    </div>
+    <!-- Add scripts or CDN links for interactivity if necessary -->
+</body>
+</html>

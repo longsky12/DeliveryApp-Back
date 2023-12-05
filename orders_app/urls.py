@@ -6,6 +6,10 @@ from . import views
 app_name='orders'
 
 urlpatterns = [
+    path('order/',views.showOrderPage,name='order'),
+
+
+
     path('api/order/',views.OrderListCreateView.as_view(),name='order-list-create'),
     path('api/order/<int:pk>/',views.OrderRetrieveUpdateDestroyView.as_view(),name='order-retrieve-update-destroy'),
     path('api/order/<int:pk>/update-status/',views.updateOrderStatus,name='update-order-status'),

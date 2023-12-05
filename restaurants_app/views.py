@@ -13,6 +13,23 @@ from .serializers import RestaurantSerializer, MenuSerializer, MenuOptionSeriali
 from django.shortcuts import render
 from django.http import HttpResponse
 
+
+# 웹뷰웹 형식의 HTML 파일을 리턴할 코드
+from django.views.generic import TemplateView
+
+class RestaurantListView(TemplateView):
+    template_name = 'restaurants/restaurants_list.html'  # 템플릿 파일의 경로를 지정해야 합니다.
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        restaurants = Restaurant.objects.all()
+        context['restaurants'] = restaurants
+        return context
+
+
+
+
+
 # Authentication - 사용자의 신원(회원/비회원/관리자 등을 확인)을 확인하는 절차
 # Permission - 특정 서비스를 어느 정도로 이용할 수 있는지에 대한 권한
 

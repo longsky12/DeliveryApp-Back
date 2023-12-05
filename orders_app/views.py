@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -13,6 +14,17 @@ from .models import Order, Cart, CartItem
 from .serializers import OrderSerializer, CartSerializer, CartItemSerializer
 from .permissions import AdminPermission, UserPermission, IsRestaurantOwnerPermission
 
+
+#----------------------------------------
+#웹뷰앱 형식의 코드
+def showOrderPage(request):
+    return render(request,'orders/orders.html')
+
+
+
+
+
+#------------------------------------------
 # Order
 # CreateAPIView only create : POST
 # ListCreateAPIView create & list : POST & GET

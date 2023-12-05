@@ -13,6 +13,7 @@ router.register(r'menus/(?P<menu_id>\d+)/menu-options',views.MenuOptionViewSet,b
 router.register(r'dibs',views.DibViewSet, basename='dibs')
 urlpatterns = [
     path('api/',include(router.urls)),
+    path('restaurants/',views.RestaurantListView.as_view(),name='restaurants-list'),
 ]
 
 # RESTAURANT
