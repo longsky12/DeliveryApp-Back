@@ -6,7 +6,7 @@ from . import views
 app_name='orders'
 
 urlpatterns = [
-    path('order/',views.showOrderPage,name='order'),
+    path('order/',views.OrderTemplateView.as_view(),name='order'),
 
 
 

@@ -1,3 +1,4 @@
+from django.views import View
 from django.shortcuts import render
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
@@ -17,10 +18,13 @@ from .permissions import AdminPermission, UserPermission, IsRestaurantOwnerPermi
 
 #----------------------------------------
 #웹뷰앱 형식의 코드
-def showOrderPage(request):
-    return render(request,'orders/orders.html')
-
-
+class OrderTemplateView(View):
+    def get(self,request):
+        orders=Order.objects.all()
+        context={
+            'orders':orders,
+        }
+        return render(request,'orders/orders.html',context)
 
 
 

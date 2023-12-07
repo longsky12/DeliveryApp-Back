@@ -1,34 +1,122 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Restaurant List</title>
-    <!-- Add necessary stylesheets or CDN links for styling -->
-</head>
-<body>
-    <!--검색창 있을 자리-->
-    <h1>Restaurant List</h1>
 
-    <div>
-        sort & logo & filter
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>Restaurant List</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'global.css' %}" />
+    <link rel="stylesheet" href="{% static 'restaurants/restaurant.css' %}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="ios-status-bar">
+            <div class="action">
+                <div class="time">9:41</div>
+            </div>
+            <div class="container1">
+                <div class="battery">􀛨</div>
+                <div class="signal">
+                    <div class="rectangle"></div>
+                    <div class="rectangle1"></div>
+                    <div class="rectangle2"></div>
+                    <div class="rectangle3"></div>
+                </div>
+                <div class="wi-fi">􀙇</div>
+            </div>
+        </div>
+
+        <div class="row align-items-center justify-content-center">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Sort
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+            </div>
+            <div class="text-center">
+                <img class="pickuplogo-1-icon" alt="" src="{% static '/public/pickuplogo-1@2x.png' %}" width="200"
+                    height="180" />
+            </div>
+            <div class="text-right">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filterModal">
+                    Filter
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter 모달 -->
+        <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="filterModalLabel">Filter Options</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- 모달 내용 -->
+                        <p>Filter options go here...</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for restaurant in restaurants %}
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card mb-4">
+                    <!-- <img src="https://source.unsplash.com/100x100/?restaurant" class="card-img-top"
+                        alt="Restaurant Image"> -->
+                    <img src="http://placehold.it/200x100" />
+                    <div class="card-body">
+                        <h5 class="card-title">{{ restaurant.name }}</h5>
+                        <p class="card-text"><strong>최소 배달 금액:</strong> {{ restaurant.minDeliveryPrice }}</p>
+                        <p class="card-text"><strong>최대 배달 시간:</strong> {{ restaurant.maxDeliveryTime }}</p>
+                        <!-- Add other restaurant information fields as needed -->
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-    
-    <ul>
-        {% for restaurant in restaurants %}
-            <li>
-                <img src="https://source.unsplash.com/200x200/?cat">
-                <p>{{ restaurant.name }}</p>
-                <p><strong>Minimum Delivery Price:</strong> {{ restaurant.minDeliveryPrice }}</p>
-                <p><strong>Maximum Delivery Time:</strong> {{ restaurant.maxDeliveryTime }}</p>
-                
-                <!-- Add other restaurant information fields as needed -->
-            </li>
-        {% endfor %}
-    </ul>
-    
-    <div>
-        Home & Profile
+
+    <div class="fixed-bottom">
+        <a href="#">
+            Home
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-compass"
+                viewBox="0 0 16 16">
+                <path
+                    d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016zm6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />
+                <path d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z" />
+            </svg>
+        </a>
+        <span class="space"></span>
+        <a href="#">Profile
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z"/>
+              </svg>
+        </a>
     </div>
-    <!-- Add scripts or CDN links for interactivity if necessary -->
+
+    <!-- 부트스트랩 JS 및 Popper.js CDN -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
