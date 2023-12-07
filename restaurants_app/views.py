@@ -31,8 +31,20 @@ class RestaurantDetailView(TemplateView):
         context = super().get_context_data(**kwargs)
         restaurant_id = kwargs['pk']
         restaurant = get_object_or_404(Restaurant,pk=restaurant_id)
-        context['restaurant'] = restaurant
+        menu_categories = Menu.objects.filter(storeId=restaurant_id).values_list('category',flat=True).distinct()
+        categorized_menus = {}
+
+        for category in menu_categories:
+            categorized_menus[category]=Menu.objects.filter(storeId=restaurant_id,category=category)
+
+        context = {
+            'restaurant':restaurant,
+            'menu_categories':menu_categories,
+            'categorized_menus':categorized_menus,
+        }
         return context
+
+
 
 
 

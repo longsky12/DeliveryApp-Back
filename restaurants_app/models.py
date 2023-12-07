@@ -31,6 +31,7 @@ class Menu(models.Model):
     # 외래키로 가게 ID 연결
     storeId = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     category = models.CharField(max_length=100)
+    content = models.CharField(max_length=100,default='상품 구성 : ')
     name = models.CharField(max_length=255)
     price = models.IntegerField()
     menuPictureUrl = models.TextField(blank=True, null=True)
@@ -62,7 +63,7 @@ class MenuOption(models.Model):
     status = models.CharField(max_length=255, default="활성화")
 
     def __str__(self):
-        return f'menuOptionId: {self.menuOptionId} - menuId: {self.menuId} - option: {self.option}'
+        return f'menuOptionId: {self.menuOptionId} - menuId: {self.menuId} - option: {self.option} - content : {self.content}'
     
 
 class Dib(models.Model):
