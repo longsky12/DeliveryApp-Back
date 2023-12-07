@@ -7,13 +7,15 @@ from . import views
 app_name='restaurants'
 
 router = routers.DefaultRouter()
-router.register(r'restaurants',views.RestaurantViewSet, basename='restaurants')
+# router.register(r'restaurants',views.RestaurantViewSet, basename='restaurants')
 router.register(r'restaurants/(?P<restaurant_id>\d+)/menus',views.MenuViewSet, basename='menus')
 router.register(r'menus/(?P<menu_id>\d+)/menu-options',views.MenuOptionViewSet,basename='menu-options')
 router.register(r'dibs',views.DibViewSet, basename='dibs')
 urlpatterns = [
     path('api/',include(router.urls)),
     path('restaurants/',views.RestaurantListView.as_view(),name='restaurants-list'),
+    path('restaurants/<int:pk>/',views.RestaurantDetailView.as_view(),name='restaurants-detail'),
+
 ]
 
 # RESTAURANT

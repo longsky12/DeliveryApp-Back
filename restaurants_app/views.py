@@ -6,16 +6,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from .permissions import IsRestaurantAdminOrReadOnly, CustomListRetrievePermission, IsOwnerOrReadOnly, IsOwnerOrReadOnlyOption
 
-
 from .models import Restaurant, Menu, MenuOption, Dib
 from .serializers import RestaurantSerializer, MenuSerializer, MenuOptionSerializer, DibSerializer
-
-from django.shortcuts import render
-from django.http import HttpResponse
 
 
 # 웹뷰웹 형식의 HTML 파일을 리턴할 코드
 from django.views.generic import TemplateView
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
 
 class RestaurantListView(TemplateView):
     template_name = 'restaurants/restaurants_list.html'  # 템플릿 파일의 경로를 지정해야 합니다.
@@ -26,7 +24,15 @@ class RestaurantListView(TemplateView):
         context['restaurants'] = restaurants
         return context
 
+class RestaurantDetailView(TemplateView):
+    template_name = 'restaurants/restaurants_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        restaurant_id = kwargs['pk']
+        restaurant = get_object_or_404(Restaurant,pk=restaurant_id)
+        context['restaurant'] = restaurant
+        return context
 
 
 
