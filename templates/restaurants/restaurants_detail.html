@@ -35,7 +35,7 @@
         <div class="card mt-5">
             <div class="card-body text-center">
                 <h1 class="card-title display-4">{{ restaurant.name }}</h1>
-                <p class="card-text lead">별점:3.5 좋아요:62 </p>
+                <p class="card-text lead">별점:{{restaurant.rating}} 좋아요:{{restaurant.dibsCount}} </p>
                 <button type="button" class="btn btn-primary">좋아요 누르기</button>
             </div>
         </div>
@@ -78,21 +78,43 @@
         <div class="menu-list">
             {% for menu in restaurant.menu_set.all %}
             {% if menu.popularity %}
-            <h1>인기메뉴</h1>
-            <div class="menu-item card">
+            <div class="menu-item card" onclick="openModal('{{ menu.id }}')">
                 <img src="http://placehold.it/200x100" class="card-img" alt="Menu Image">
                 <div class="card-body">
                     <h5 class="card-title">{{ menu.name }}</h5>
                     <p class="card-text">가격: {{ menu.price }}</p>
                     <p class="card-text">{{ menu.content }}</p>
-                    <!-- 다른 메뉴 정보 표시 -->
+                    <!-- 모달 영역 -->
+                    <div class="modal fade" id="menuModal{{ menu.id }}" tabindex="-1" role="dialog"
+                        aria-labelledby="menuModal{{ menu.id }}Label" aria-hidden="true" data-backdrop="static">
+                        <!-- 모달 내용 -->
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen"
+                            role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="menuModal{{ menu.id }}Label">메뉴 옵션 선택</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- 여기에 메뉴 옵션 선택을 위한 폼을 추가 -->
+                                    <!-- 예시: -->
+                                    <form action="{% url 'orders:cart-create' %}" method="post">
+                                        {% csrf_token %}
+                                        <!-- 폼 요소들 -->
+                                        <input type="submit" value="장바구니에 추가">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 모달 끝 -->
                 </div>
             </div>
+            {% endif %}
+            {% endfor %}
         </div>
-        {% endif %}
-        {% endfor %}
-
-
 
 
         <!-- 해당 레스토랑의 메뉴들을 나열 -->
@@ -102,14 +124,40 @@
             <h1 id="{{ category }}">{{ category }}</h1>
             <hr>
             {% for menu in menus %}
-            <div class="menu-item card">
-                <span>{{ menu.name}}</h3>
-                    <img class="card-img-top" src="http://placehold.it/200x100" alt="Menu Image">
-                    <div class="card-body">
-                        <p class="card-text">가격: {{ menu.price }}</p>
-                        <p class="card-text">{{ menu.content }}</p>
-                        <!-- 메뉴 정보 표시 -->
+            <div class="menu-item card" onclick="openModal('{{ category }}', '{{ menu.id }}')">
+                <img class="card-img-top" src="http://placehold.it/200x100" alt="Menu Image">
+                <div class="card-body">
+                    <h5 class="card-title">{{ menu.name }}</h5>
+                    <p class="card-text">가격: {{ menu.price }}</p>
+                    <p class="card-text">{{ menu.content }}</p>
+                    <!-- 모달 영역 -->
+                    <div class="modal fade" id="menuModal{{ category }}{{ menu.id }}" tabindex="-1" role="dialog"
+                        aria-labelledby="menuModal{{ category }}{{ menu.id }}Label" aria-hidden="true"
+                        data-backdrop="static">
+                        <!-- 모달 내용 -->
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl"
+                            role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="menuModal{{ category }}{{ menu.id }}Label">메뉴 옵션 선택</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- 여기에 메뉴 옵션 선택을 위한 폼을 추가 -->
+                                    <!-- 예시: -->
+                                    <form action="{% url 'orders:cart-create' %}" method="post">
+                                        {% csrf_token %}
+                                        <!-- 폼 요소들 -->
+                                        <input type="submit" value="장바구니에 추가">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <!-- 모달 끝 -->
+                </div>
             </div>
             {% endfor %}
             {% endfor %}
@@ -154,6 +202,27 @@
         } else {
             $('.fixed-bottom').fadeIn();
         }
+    });
+
+    function openModal(menuId) {
+        $('#menuModal' + menuId).modal('show');
+    }
+
+    $(document).ready(function () {
+        $('.menu-item').on('click', function () {
+            var menuId = $(this).data('menu-id');
+            $.ajax({
+                url: '{% url "restaurants:get_menu_options" %}',
+                type: 'GET',
+                data: {
+                    'menu_id': menuId
+                },
+                success: function (data) {
+                    $('#menuOptionsModal').modal('show');
+                    $('#menuOptionsContent').html(data);
+                }
+            });
+        });
     });
 </script>
 

@@ -13,7 +13,7 @@ from .serializers import RestaurantSerializer, MenuSerializer, MenuOptionSeriali
 # 웹뷰웹 형식의 HTML 파일을 리턴할 코드
 from django.views.generic import TemplateView
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 class RestaurantListView(TemplateView):
     template_name = 'restaurants/restaurants_list.html'  # 템플릿 파일의 경로를 지정해야 합니다.
@@ -44,6 +44,10 @@ class RestaurantDetailView(TemplateView):
         }
         return context
 
+def get_menu_options(request):
+    menu_id = request.GET.get('menu_id')
+    menu_options = MenuOption.objects.filter(menuId=menu_id).values('option','content','price')
+    return JsonResponse({'menu_options':list(menu_options)})    
 
 
 

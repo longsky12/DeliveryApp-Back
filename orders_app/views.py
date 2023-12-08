@@ -27,7 +27,6 @@ class OrderTemplateView(View):
         return render(request,'orders/orders.html',context)
 
 
-
 #------------------------------------------
 # Order
 # CreateAPIView only create : POST
