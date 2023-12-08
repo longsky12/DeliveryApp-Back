@@ -20,6 +20,12 @@ urlpatterns = [
     path('get-menu-options/',views.get_menu_options,name='get_menu_options'),
 ]
 
+# MenuImage
+# GET   menu-images/
+# POST  menu-images/ 
+# GET   menu-images/<pk>
+# UPDATE menu-images/<pk>
+
 # RESTAURANT
 # GET    /restaurants/:         모든 레스토랑 리스트를 가져옴
 # POST   /restaurants/:         새로운 레스토랑을 생성함
