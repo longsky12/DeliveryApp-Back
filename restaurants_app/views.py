@@ -6,8 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from .permissions import IsRestaurantAdminOrReadOnly, CustomListRetrievePermission, IsOwnerOrReadOnly, IsOwnerOrReadOnlyOption
 
-from .models import Restaurant, Menu, MenuOption, Dib
-from .serializers import RestaurantSerializer, MenuSerializer, MenuOptionSerializer, DibSerializer
+from .models import Restaurant, Menu, MenuOption, Dib, MenuImage
+from .serializers import RestaurantSerializer, MenuSerializer, MenuOptionSerializer, DibSerializer, MenuImageSerializer
 
 
 # 웹뷰웹 형식의 HTML 파일을 리턴할 코드
@@ -214,6 +214,52 @@ class MenuViewSet(viewsets.ModelViewSet):
 
         return Response({"message": "Object deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
+# ============================================================
+# MenuImg ViewSet
+class MenuImageViewSet(viewsets.ModelViewSet):
+    serializer_class = MenuImageSerializer
+    queryset = MenuImage.objects.all()
+    permission_classes = [IsOwnerOrReadOnly]  # 권한 설정에 따라 변경
+
+    # 해당 메뉴의 이미지들만 가져오기
+    def get_queryset(self):
+        menu_id = self.kwargs.get('menu_id')
+        queryset = MenuImage.objects.filter(menu_id=menu_id)
+        return queryset
+
+    # 이미지 업로드
+    def create(self, request, *args, **kwargs):
+        menu_id = self.kwargs.get('menu_id')  # URL에서 메뉴 ID 가져옴
+
+        # request.data에 메뉴 ID 추가
+        request.data['menu'] = menu_id
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    # 이미지 수정
+    def update(self, request, *args, **kwargs):
+        menu_id = self.kwargs.get('menu_id')  # URL에서 메뉴 ID 가져옴
+
+        # request.data에 메뉴 ID 추가
+        request.data['menu'] = menu_id
+
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+
+    # 이미지 삭제
+    def destroy(self, request, *args, **kwargs):
+        menu_image = self.get_object()
+        menu_image.delete()
+        return Response({"message":"이미지가 정상적으로 지워졌습니다."},status=status.HTTP_204_NO_CONTENT)
+    
 # ============================================================
 # MenuOption ViewSet
 class MenuOptionViewSet(viewsets.ModelViewSet):

@@ -11,6 +11,8 @@ router = routers.DefaultRouter()
 router.register(r'restaurants/(?P<restaurant_id>\d+)/menus',views.MenuViewSet, basename='menus')
 router.register(r'menus/(?P<menu_id>\d+)/menu-options',views.MenuOptionViewSet,basename='menu-options')
 router.register(r'dibs',views.DibViewSet, basename='dibs')
+router.register(r'menu-images', views.MenuImageViewSet, basename='menu-images')
+
 urlpatterns = [
     path('api/',include(router.urls)),
     path('restaurants/',views.RestaurantListView.as_view(),name='restaurants-list'),

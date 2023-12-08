@@ -58,3 +58,6 @@ ADMIN_KEY = get_payment_secrets("ADMIN_KEY")
 
 TOSS_PAYMENTS_SECRET_KEY = get_payment_secrets("TOSS_PAYMENTS_SECRET_KEY")
 TOSS_PAYMENTS_CLIENT_KEY = get_payment_secrets("TOSS_PAYMENTS_CLIENT_KEY")
+
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_URL = '/media/'

@@ -43,6 +43,15 @@ class Menu(models.Model):
     def __str__(self):
         return f'menuId : {self.menuId} - storeId : {self.storeId} - name : {self.name}'
 
+class MenuImage(models.Model):
+    menu = models.ForeignKey(Menu,on_delete=models.CASCADE, related_name='menu_images')
+    image = models.ImageField(upload_to='menu_images/')
+    createdDate = models.DateTimeField(auto_now_add=True)
+    modifiedDate = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=255, default="일반")
+
+    def __str__(self):
+        return f'Image for Menu ID: {self.menu.menuId}'
 
 class MenuOption(models.Model):
     # 메뉴 옵션 ID, PK

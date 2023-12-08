@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from .my_settings import BASE_DIR, SECRET_KEY, ADMIN_KEY, TOSS_PAYMENTS_CLIENT_KEY, TOSS_PAYMENTS_SECRET_KEY
+from .my_settings import BASE_DIR, SECRET_KEY, ADMIN_KEY, TOSS_PAYMENTS_CLIENT_KEY, TOSS_PAYMENTS_SECRET_KEY,MEDIA_ROOT,MEDIA_URL
 # from .my_settings import BASE_DIR, SECRET_KEY, DATABASES
 
 # print(BASE_DIR)
@@ -155,7 +155,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
