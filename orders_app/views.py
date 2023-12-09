@@ -85,8 +85,10 @@ class OrderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 class CartCreateView(generics.CreateAPIView):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+
+    # 템플릿을 위해서 실험
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         if not request.user.is_restaurant_admin:
@@ -175,7 +177,7 @@ class CartItemListCreateView(generics.ListCreateAPIView):
                     # 여기서 cartId랑 storeId를 선언해줬었는데 뒤에 serializer에 전부 들어있었음;;
                     CartItem.objects.create(**serializer.validated_data)
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({"message":"장바구니에 추가되었습니다.","data":serializer.data}, status=status.HTTP_201_CREATED)
 
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)

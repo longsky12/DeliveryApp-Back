@@ -1,0 +1,47 @@
+<!-- 해당 레스토랑의 인기 메뉴들을 나열 -->
+<div class="menu-list">
+    {% for menu in restaurant.menu_set.all %}
+    {% if menu.popularity %}
+    <div class="menu-item card" onclick="openModal('{{ category }}','{{menu.menuId}}')">
+        <img src="http://placehold.it/200x100" class="card-img" alt="Menu Image">
+        <div class="card-body">
+            <h5 class="card-title">{{ menu.name }}</h5>
+            <p class="card-text">가격: {{ menu.price }}</p>
+            <p class="card-text">{{ menu.content }}</p>
+            <!-- 모달 영역 -->
+            <div class="modal fade" id="menuModal_${category}_${menuId}" tabindex="-1" role="dialog"
+aria-labelledby="menuModal_${category}_${menuId}Label" aria-hidden="true" data-backdrop="static">
+                <!-- 모달 내용 -->
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen"
+                    role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="menuModal{{ menu.menuId }}Label">메뉴 옵션 선택</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- 여기에 메뉴 옵션 선택을 위한 폼을 추가 -->
+                            <!-- 예시: -->
+                            <form action="{% url 'orders:cart-create' %}" method="post">
+                                {% csrf_token %}
+                                <label for="option">옵션 선택:</label>
+                                <select name="option" id="option">
+                                    <!-- 여기에 옵션을 동적으로 추가할 수 있습니다. -->
+                                    <!-- 예시: -->
+                                    <option value="option1">옵션 1</option>
+                                    <option value="option2">옵션 2</option>
+                                </select>
+                                <input type="submit" value="장바구니에 추가">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 모달 끝 -->
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
