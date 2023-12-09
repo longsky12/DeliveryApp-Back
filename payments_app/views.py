@@ -20,22 +20,36 @@ def kakaoPayLogic(request):
     }
 
     try:
-        partner_order_id = request.GET.get('orderId')
-        order = Order.objects.get(orderId=partner_order_id)
-        user = order.userId
-        cart = order.cartId
-        cart_items = CartItem.objects.filter(cartId=cart).first()
+        # partner_order_id = request.GET.get('orderId')
+        # order = Order.objects.get(orderId=partner_order_id)
+        # user = order.userId
+        # cart = order.cartId
+        # cart_items = CartItem.objects.filter(cartId=cart).first()
 
-        total_amount = sum(item.menuId.price * item.quantity for item in cart_items)
+        # total_amount = sum(item.menuId.price * item.quantity for item in cart_items)
+
+        # _params = {
+        #     'cid': 'TC0ONETIME',
+        #     'partner_order_id':order.orderId,
+        #     'partner_user_id':user.userId,
+        #     'item_name':cart_items.menuId.name,
+        #     'quantity':cart_items.quantity,
+        #     'total_amount':total_amount,
+        #     'vat_amount':total_amount*0.1,
+        #     'tax_free_amount':'0',
+        #     'approval_url':'http://127.0.0.1:8000/paysuccess',
+        #     'fail_url':'http://127.0.0.1:8000/payfail',
+        #     'cancel_url':'http://127.0.0.1:8000/paycancel'
+        # }
 
         _params = {
             'cid': 'TC0ONETIME',
-            'partner_order_id':order.orderId,
-            'partner_user_id':user.userId,
-            'item_name':cart_items.menuId.name,
-            'quantity':cart_items.quantity,
-            'total_amount':total_amount,
-            'vat_amount':total_amount*0.1,
+            'partner_order_id':'1234',
+            'partner_user_id':'1234',
+            'item_name':'쌀 20Kg',
+            'quantity':'3',
+            'total_amount':'180000',
+            'vat_amount':"18000",
             'tax_free_amount':'0',
             'approval_url':'http://127.0.0.1:8000/paysuccess',
             'fail_url':'http://127.0.0.1:8000/payfail',

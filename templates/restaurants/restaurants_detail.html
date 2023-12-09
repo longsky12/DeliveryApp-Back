@@ -78,21 +78,21 @@
         <div class="menu-list">
             {% for menu in restaurant.menu_set.all %}
             {% if menu.popularity %}
-            <div class="menu-item card" onclick="openModal('{{ menu.id }}')">
+            <div class="menu-item card" onclick="openModal('{{ category }}','{{menu.menuId}}')">
                 <img src="http://placehold.it/200x100" class="card-img" alt="Menu Image">
                 <div class="card-body">
                     <h5 class="card-title">{{ menu.name }}</h5>
                     <p class="card-text">가격: {{ menu.price }}</p>
                     <p class="card-text">{{ menu.content }}</p>
                     <!-- 모달 영역 -->
-                    <div class="modal fade" id="menuModal{{ menu.id }}" tabindex="-1" role="dialog"
-                        aria-labelledby="menuModal{{ menu.id }}Label" aria-hidden="true" data-backdrop="static">
+                    <div class="modal fade" id="menuModal_${category}_${menuId}" tabindex="-1" role="dialog"
+    aria-labelledby="menuModal_${category}_${menuId}Label" aria-hidden="true" data-backdrop="static">
                         <!-- 모달 내용 -->
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen"
                             role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="menuModal{{ menu.id }}Label">메뉴 옵션 선택</h5>
+                                    <h5 class="modal-title" id="menuModal{{ menu.menuId }}Label">메뉴 옵션 선택</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -102,7 +102,13 @@
                                     <!-- 예시: -->
                                     <form action="{% url 'orders:cart-create' %}" method="post">
                                         {% csrf_token %}
-                                        <!-- 폼 요소들 -->
+                                        <label for="option">옵션 선택:</label>
+                                        <select name="option" id="option">
+                                            <!-- 여기에 옵션을 동적으로 추가할 수 있습니다. -->
+                                            <!-- 예시: -->
+                                            <option value="option1">옵션 1</option>
+                                            <option value="option2">옵션 2</option>
+                                        </select>
                                         <input type="submit" value="장바구니에 추가">
                                     </form>
                                 </div>
@@ -124,22 +130,21 @@
             <h1 id="{{ category }}">{{ category }}</h1>
             <hr>
             {% for menu in menus %}
-            <div class="menu-item card" onclick="openModal('{{ category }}', '{{ menu.id }}')">
+            <div class="menu-item card" onclick="openModal('{{ category }}', '{{ menu.menuId }}')">
                 <img class="card-img-top" src="http://placehold.it/200x100" alt="Menu Image">
                 <div class="card-body">
                     <h5 class="card-title">{{ menu.name }}</h5>
                     <p class="card-text">가격: {{ menu.price }}</p>
                     <p class="card-text">{{ menu.content }}</p>
                     <!-- 모달 영역 -->
-                    <div class="modal fade" id="menuModal{{ category }}{{ menu.id }}" tabindex="-1" role="dialog"
-                        aria-labelledby="menuModal{{ category }}{{ menu.id }}Label" aria-hidden="true"
-                        data-backdrop="static">
+                    <div class="modal fade" id="menuModal_${category}_${menuId}" tabindex="-1" role="dialog"
+                    aria-labelledby="menuModal_${category}_${menuId}Label" aria-hidden="true" data-backdrop="static">
                         <!-- 모달 내용 -->
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl"
                             role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="menuModal{{ category }}{{ menu.id }}Label">메뉴 옵션 선택</h5>
+                                    <h5 class="modal-title" id="menuModal{{ category }}{{ menu.menuId }}Label">메뉴 옵션 선택</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -150,6 +155,12 @@
                                     <form action="{% url 'orders:cart-create' %}" method="post">
                                         {% csrf_token %}
                                         <!-- 폼 요소들 -->
+                                        <label for="option">옵션 선택:</label>
+                                        <select name="option" id="option">
+                                            <!-- 여기에 옵션을 동적으로 추가할 수 있습니다. -->
+                                            <!-- 예시: -->
+
+                                        </select>
                                         <input type="submit" value="장바구니에 추가">
                                     </form>
                                 </div>
@@ -204,26 +215,31 @@
         }
     });
 
-    function openModal(menuId) {
-        $('#menuModal' + menuId).modal('show');
+    function openModalById(modalId) {
+        $('#' + modalId).modal('show');
     }
 
-    $(document).ready(function () {
-        $('.menu-item').on('click', function () {
-            var menuId = $(this).data('menu-id');
-            $.ajax({
-                url: '{% url "restaurants:get_menu_options" %}',
-                type: 'GET',
-                data: {
-                    'menu_id': menuId
-                },
-                success: function (data) {
-                    $('#menuOptionsModal').modal('show');
-                    $('#menuOptionsContent').html(data);
-                }
-            });
+    function openMenuModal(category, menuId) {
+        $.ajax({
+            url: '{% url "restaurants:get_menu_options" %}',
+            type: 'GET',
+            data: {
+                'menu_id': menuId
+            },
+            success: function (data) {
+                $('#menuModal' + category + menuId).modal('show');
+                // 데이터에 옵션 배열이 있다고 가정
+                // 'menuOptionsContent'는 여러분의 HTML 요소 ID로 대체하세요
+                $('#menuOptionsContent').html('');
+                data.menu_options.forEach(function (option) {
+                    // 'option'이 'name', 'price', 'content' 등의 속성을 가진다고 가정
+                    $('#menuOptionsContent').append(
+                        `<p>${option.option} - ${option.price} - ${option.content}</p>`
+                    );
+                });
+            }
         });
-    });
+    }
 </script>
 
 </html>

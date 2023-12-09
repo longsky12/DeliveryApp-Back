@@ -46,10 +46,15 @@ class RestaurantDetailView(TemplateView):
 
 def get_menu_options(request):
     menu_id = request.GET.get('menu_id')
-    menu_options = MenuOption.objects.filter(menuId=menu_id).values('option','content','price')
-    return JsonResponse({'menu_options':list(menu_options)})    
+    menu_options = MenuOption.objects.filter(menuId=menu_id).values('option', 'content', 'price')
+    
+    # JSON 형태로 데이터 조합
+    options_list = [
+        {'name': option['option'], 'price': option['price'], 'content': option['content']}
+        for option in menu_options
+    ]
 
-
+    return JsonResponse({'menu_options': options_list})
 
 
 # Authentication - 사용자의 신원(회원/비회원/관리자 등을 확인)을 확인하는 절차
