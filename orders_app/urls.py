@@ -6,10 +6,6 @@ from . import views
 app_name='orders'
 
 urlpatterns = [
-    path('order/',views.OrderTemplateView.as_view(),name='order'),
-
-
-
     path('api/order/',views.OrderListCreateView.as_view(),name='order-list-create'),
     path('api/order/<int:pk>/',views.OrderRetrieveUpdateDestroyView.as_view(),name='order-retrieve-update-destroy'),
     path('api/order/<int:pk>/update-status/',views.updateOrderStatus,name='update-order-status'),
@@ -17,6 +13,10 @@ urlpatterns = [
     path('api/cart/<int:pk>/',views.CartRetrieveDestroyView.as_view(), name='cart-retrieve-update-destroy'),
     path('api/cartitem/',views.CartItemListCreateView.as_view(),name='cartitem-list-create'),
     path('api/cartitem/<int:pk>/',views.CartItemRetrieveUpdateDestroyView.as_view(),name='cartitem-retrieve-update-destroy'),
+
+
+    path('order/',views.OrderTemplateView.as_view(),name='order'),
+    path('cart/<int:pk>/',views.CartView.as_view(),name='cart'),
 
 ]
 

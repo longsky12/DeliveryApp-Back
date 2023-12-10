@@ -15,6 +15,9 @@ from django.views.generic import TemplateView
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 
+# from orders_app.utils import cart_has_items
+
+# TemplateView => 특정 템플릿 파일을 렌더링 하기 위한 뷰
 class RestaurantListView(TemplateView):
     template_name = 'restaurants/restaurants_list.html'  # 템플릿 파일의 경로를 지정해야 합니다.
 
@@ -28,7 +31,9 @@ class RestaurantDetailView(TemplateView):
     template_name = 'restaurants/restaurants_detail.html'
 
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
+        # user = self.request.user
         restaurant_id = kwargs['pk']
         restaurant = get_object_or_404(Restaurant,pk=restaurant_id)
         menu_categories = Menu.objects.filter(storeId=restaurant_id).values_list('category',flat=True).distinct()
@@ -37,24 +42,18 @@ class RestaurantDetailView(TemplateView):
         for category in menu_categories:
             categorized_menus[category]=Menu.objects.filter(storeId=restaurant_id,category=category)
 
+        # cart_item_exist = cart_has_items(user)
+
         context = {
             'restaurant':restaurant,
             'menu_categories':menu_categories,
             'categorized_menus':categorized_menus,
+            # 'cart_item_exist':cart_item_exist,
+
         }
         return context
 
-def get_menu_options(request):
-    menu_id = request.GET.get('menu_id')
-    menu_options = MenuOption.objects.filter(menuId=menu_id).values('option', 'content', 'price')
-    
-    # JSON 형태로 데이터 조합
-    options_list = [
-        {'name': option['option'], 'price': option['price'], 'content': option['content']}
-        for option in menu_options
-    ]
 
-    return JsonResponse({'menu_options': options_list})
 
 
 # Authentication - 사용자의 신원(회원/비회원/관리자 등을 확인)을 확인하는 절차

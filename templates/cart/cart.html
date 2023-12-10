@@ -1,0 +1,142 @@
+{% load static %}
+{% load custom_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>장바구니</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'cart/cart.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid mt-5">
+        <h1 class="text-center">장바구니</h1>
+
+        <!-- 장바구니 리스트 -->
+        {% if cart_items %}
+        <div class="row mt-4">
+            <div class="col-lg-9 mx-auto">
+                <ul class="list-group">
+                    {% for cart_item in cart_items %}
+                    <li class="list-group-item">
+                        <!-- 각 아이템 정보 -->
+                        <div class="row">
+                            <div class="col-md-8">
+                                메뉴: {{ cart_item.menuId.name }} | 추가옵션: {{ cart_item.menuOptionId.content }}
+                            </div>
+                            <div class="col-md-3 text-right">
+                                가격: <span class="price" data-unit-price="{{ cart_item|calculate_total_price }}">
+                                    {{ cart_item|calculate_total_price }}
+                                </span>
+                            </div>
+                            <button class="btn btn-sm btn-danger delete-item"
+                                data-item-id="{{ cart_item.pk }}">X</button>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-8">
+                                수량: <input type="number" class="quantity form-control" value="{{ cart_item.quantity }}"
+                                    min="1" max="20">
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% else %}
+        <!-- 장바구니가 비어 있는 경우 -->
+        <div class="container-fluid mt-5">
+            <h2 class="text-center">장바구니가 비어 있습니다.</h2>
+            <div class="text-center">
+                <a href="#" onclick="history.back();" class="btn btn-secondary">뒤로가기</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 전체 가격과 버튼 -->
+    {% if cart_items %}
+    <div class="row mt-4">
+        <div class="col-lg-9 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">결제 정보</h5>
+                    <p>전체 가격: <span id="total-price"></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <a href="#" onclick="history.back();" class="btn btn-secondary btn-block mb-2">뒤로가기</a>
+                    <button class="btn btn-primary btn-block">결제하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+$(document).ready(function () {
+    updateTotalPrice();
+
+    // 삭제 버튼 클릭 이벤트
+    $('.delete-item').on('click', function () {
+        const deleteUrl = "{% url 'orders:cartitem-retrieve-update-destroy' pk=9999 %}".replace('9999', $(this).data('item-id'));
+        const token = 'cf29a81e976fb9bcabf72d085d9a73d6e5f000fe'; // 여기에 토큰을 가져오는 로직을 추가하세요.
+        const csrftoken = getCookie('csrftoken');
+        const $clickedItem = $(this); // 클릭된 아이템을 변수에 저장
+
+        // AJAX를 이용해 아이템 삭제 요청
+        $.ajax({
+            type: 'DELETE',
+            headers: {
+                'Authorization': `Token ${token}`,
+                'X-CSRFToken': csrftoken,
+            },
+            url: deleteUrl,
+            success: function (response) {
+                alert('장바구니에서 삭제되었습니다.');
+                $clickedItem.closest('li').remove(); // 저장한 변수를 이용하여 삭제 대상을 찾음
+                updateTotalPrice(); // 전체 가격 업데이트
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+
+    // 기존의 가격 업데이트 함수
+    function updateTotalPrice() {
+        let totalPrice = 0;
+        $('.price').each(function () {
+            totalPrice += parseFloat($(this).text());
+        });
+        $('#total-price').text(totalPrice);
+    }
+
+    // CSRF 토큰 가져오기 함수
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+
+    </script>
+</body>
+
+</html>

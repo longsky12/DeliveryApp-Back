@@ -1,0 +1,39 @@
+body {
+    font-size: 20px;
+    background-color: #f8f9fa;
+}
+
+h1 {
+    font-size: 3em;
+}
+
+.list-group-item {
+    font-size: 1.5em;
+}
+
+.price {
+    font-size: 1.5em;
+}
+
+.quantity {
+    font-size: 1.5em;
+}
+
+.card-title {
+    font-size: 2em;
+}
+
+#total-price {
+    font-size: 1.8em;
+}
+
+.btn {
+    font-size: 1.8em;
+}
+
+.quantity {
+    font-size: 1.5em;
+    width: 4em; /* 너비 조정 */
+    display: inline-block; /* 인라인 블록으로 설정하여 옆으로 이동 */
+    margin-right: 10px; /* 오른쪽 여백 추가 */
+}

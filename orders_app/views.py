@@ -1,5 +1,4 @@
-from django.views import View
-from django.shortcuts import render
+from typing import Any
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -18,6 +17,9 @@ from .permissions import AdminPermission, UserPermission, IsRestaurantOwnerPermi
 
 #----------------------------------------
 #웹뷰앱 형식의 코드
+from django.views import View,generic
+from django.shortcuts import render
+
 class OrderTemplateView(View):
     def get(self,request):
         orders=Order.objects.all()
@@ -25,6 +27,27 @@ class OrderTemplateView(View):
             'orders':orders,
         }
         return render(request,'orders/orders.html',context)
+
+# DetailView => 특정 모델의 단일 인스턴스에 대한 세부 정보를 표시하는 뷰
+# 단일 객체를 볼 수는 있지만 외래키로 연결된 객체까지 살펴보기에는 제한이 있음
+# class CartView(generic.DetailView):
+#     model = Cart
+#     template_name = 'cart/cart.html'
+#     context_object_name = 'object'
+
+class CartView(generic.TemplateView):
+    template_name='cart/cart.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cartId = self.kwargs['pk']
+        cart_items = CartItem.objects.filter(cartId=cartId)
+
+        context = {
+            'cart_items':cart_items,
+        }
+
+        return context
 
 
 #------------------------------------------
@@ -86,7 +109,7 @@ class CartCreateView(generics.CreateAPIView):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
-    # 템플릿을 위해서 실험
+    # 리액트랑 연동하기 전이라 권한 허가 제거
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
 
@@ -188,8 +211,10 @@ class CartItemListCreateView(generics.ListCreateAPIView):
 class CartItemRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+
+    # 리액트랑 연동하기 전이라 권한 허가 제거
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

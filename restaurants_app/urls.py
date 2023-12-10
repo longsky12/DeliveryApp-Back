@@ -15,9 +15,10 @@ router.register(r'menu-images', views.MenuImageViewSet, basename='menu-images')
 
 urlpatterns = [
     path('api/',include(router.urls)),
+
+    
     path('restaurants/',views.RestaurantListView.as_view(),name='restaurants-list'),
     path('restaurants/<int:pk>/',views.RestaurantDetailView.as_view(),name='restaurants-detail'),
-    path('get-menu-options/',views.get_menu_options,name='get_menu_options'),
 ]
 
 # MenuImage
