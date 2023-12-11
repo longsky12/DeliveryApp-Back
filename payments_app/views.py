@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
-import requests, json, base64, time
+import requests, json, base64, time, uuid
 from django.conf import settings
 from django.http import HttpResponseRedirect
 
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from orders_app.models import Order, CartItem
+from orders_app.models import Order, CartItem, Cart
 
 def kakaoPay(request):
     return render(request,'payments/payTest.html')
@@ -106,12 +106,40 @@ def index(request):
         'payments/index.html',
     )
 
+def generate_order_id():
+    return str(uuid.uuid4().fields[-1])[:8].upper()
+
 def window(request):
     client_key = settings.TOSS_PAYMENTS_CLIENT_KEY
+
+    # 가장 최근에 생성된 카트를 가져옴(유저가 있어야함)
+    # user_cart = Cart.objects.filter(userId=request.user).order_by('-createdDate').first()
+    
+    # 해당하는 카트에 들어있는 모든 cartItem을 가져옴
+    # cart_items = CartItem.objects.filter(cartId=user_cart)
+
+    # 주문 번호를 가져와서 넣어주어야 하나 주문은 생성되지 않았기에 랜덤 번호 넣어줌
+    # 나중에는 주문 번호 가져와서 처리하기
+    # order_id = generate_order_id()
+
+    # 첫번째 물품명
+    # first_item_name = cart_items.first().menuId.name if cart_items else None
+
+    # 전체 금액 계산
+    # total_amount = sum(item.menuId.price*item.quantity for item in cart_items)
+
+    # 사용자 이름
+    # user_name = request.user.username if request.user.is_authenticated else None
+
     return render(
         request,
         'payments/window.html',
-        {"client_key":client_key}
+        {
+            "client_key":client_key,
+            # "first_item_name":first_item_name,
+            # "order_id":order_id,
+            # "user_name":user_name,
+        }
     )
 
 def success(request):
