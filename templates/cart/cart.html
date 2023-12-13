@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>장바구니</title>
+    {% csrf_token %}
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="{% static 'cart/cart.css' %}" rel="stylesheet">
 </head>
@@ -71,7 +72,7 @@
             <div class="card">
                 <div class="card-body">
                     <a href="#" onclick="history.back();" class="btn btn-secondary btn-block mb-2">뒤로가기</a>
-                    <a href="{% url 'payments:toss_pay' %}" class="btn btn-primary btn-block">결제하기</a>
+                    <a href="#" id="payment-button" class="btn btn-primary btn-block">결제하기</a>
                 </div>
             </div>
         </div>
@@ -83,7 +84,38 @@
     <script>
 $(document).ready(function () {
     updateTotalPrice();
+    
+    $('#payment-button').click(function(e) {
+    e.preventDefault(); // 기본 이벤트(링크 이동) 방지
 
+    // CSRF 토큰 가져오기
+    const csrftoken = getCookie('csrftoken');
+
+    // 여기에 토큰을 가져오는 로직이 있어야 합니다.
+    const token = 'cf29a81e976fb9bcabf72d085d9a73d6e5f000fe';
+
+    const total_price = updateTotalPrice();
+
+    // AJAX 요청 설정
+    $.ajax({
+        type: "POST",
+        headers: {
+            'X-CSRFToken': csrftoken, // CSRF 토큰 설정
+            'Authorization': `Token ${token}`, // 토큰 설정
+        },
+        url: "{% url 'payments:get_total_price' %}",
+        data: {
+            'total_price': total_price,
+        },
+        success: function(data) {
+            // 성공 시 window 함수 호출
+            window.location.href = "{% url 'payments:toss_pay' %}";
+        },
+        error: function(xhr, textStatus, errorThrown) {
+            // 에러 처리
+        }
+    });
+});
     // 삭제 버튼 클릭 이벤트
     $('.delete-item').on('click', function () {
         const deleteUrl = "{% url 'orders:cartitem-retrieve-update-destroy' pk=9999 %}".replace('9999', $(this).data('item-id'));
@@ -95,20 +127,21 @@ $(document).ready(function () {
         $.ajax({
             type: 'DELETE',
             headers: {
-                'Authorization': `Token ${token}`,
                 'X-CSRFToken': csrftoken,
+                'Authorization': `Token ${token}`,
             },
             url: deleteUrl,
             success: function (response) {
                 alert('장바구니에서 삭제되었습니다.');
                 $clickedItem.closest('li').remove(); // 저장한 변수를 이용하여 삭제 대상을 찾음
-                updateTotalPrice(); // 전체 가격 업데이트
+                updateTotalPrice(); // 전체 가격 업데이트 
             },
             error: function (error) {
                 console.log(error);
             }
         });
     });
+
 
     // 기존의 가격 업데이트 함수
     function updateTotalPrice() {
@@ -117,6 +150,7 @@ $(document).ready(function () {
             totalPrice += parseFloat($(this).text());
         });
         $('#total-price').text(totalPrice);
+        return totalPrice;
     }
 
     // CSRF 토큰 가져오기 함수

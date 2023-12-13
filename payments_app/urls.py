@@ -19,5 +19,6 @@ urlpatterns = [
     path('index/',views.index),
     path('toss_pay/',views.window, name='toss_pay'),
     path('toss_pay_success/',views.success, name='toss_pay_success'),
-    path('fail/',views.fail, name='toss_pay_fail'),
+    path('toss_pay_fail/',views.fail, name='toss_pay_fail'),
+    path('total_price/',views.totalPrice, name='get_total_price'),
 ]

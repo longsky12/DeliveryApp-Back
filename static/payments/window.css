@@ -1,0 +1,25 @@
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.mb2 {
+    margin-bottom: 25px;
+}
+
+.gray {
+    color: rgb(78, 89, 104);
+    font-size: 13px;
+}
+
+.red {
+    color: rgb(240, 68, 82);
+    font-size: 13px;
+}
+
+.box_section {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgb(0 0 0 / 1%), 0 6px 6px rgb(0 0 0 / 6%);
+}

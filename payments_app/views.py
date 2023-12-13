@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
-import requests, json, base64, time, uuid
+import requests, json, base64, time
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,JsonResponse
 
-from rest_framework import viewsets
+from rest_framework import viewsets,status
 from rest_framework.response import Response
 
 from orders_app.models import Order, CartItem, Cart
@@ -99,6 +99,9 @@ def payCancel(request):
 
 
 # ===================================================
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import authentication_classes, permission_classes
+
 # TOSS PAYMENT
 def index(request):
     return render(
@@ -106,41 +109,53 @@ def index(request):
         'payments/index.html',
     )
 
-def generate_order_id():
-    return str(uuid.uuid4().fields[-1])[:8].upper()
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([])
 def window(request):
+    print("window request user:",request.user)
     client_key = settings.TOSS_PAYMENTS_CLIENT_KEY
 
     # 가장 최근에 생성된 카트를 가져옴(유저가 있어야함)
     # user_cart = Cart.objects.filter(userId=request.user).order_by('-createdDate').first()
     
-    # 해당하는 카트에 들어있는 모든 cartItem을 가져옴
-    # cart_items = CartItem.objects.filter(cartId=user_cart)
+    # 해당하는 카트에 들어있는 모든 cartItem을 가져옴(하드 코딩된거 user가져올수 있을떄 바꿔주기)
+    cart_items = CartItem.objects.filter(cartId=4).order_by('-menuId__price')
 
     # 주문 번호를 가져와서 넣어주어야 하나 주문은 생성되지 않았기에 랜덤 번호 넣어줌
     # 나중에는 주문 번호 가져와서 처리하기
-    # order_id = generate_order_id()
 
     # 첫번째 물품명
-    # first_item_name = cart_items.first().menuId.name if cart_items else None
+    first_item_name = cart_items.first().menuId.name if cart_items else None
 
     # 전체 금액 계산
-    # total_amount = sum(item.menuId.price*item.quantity for item in cart_items)
-
-    # 사용자 이름
-    # user_name = request.user.username if request.user.is_authenticated else None
+    total_price = request.session.get('total_price')
+    
+    # 사용자 이름(인증이 되었으면 가져와진다.)
+    user_name = request.user.username if request.user.is_authenticated else None
 
     return render(
         request,
         'payments/window.html',
         {
             "client_key":client_key,
-            # "first_item_name":first_item_name,
+            "first_item_name":first_item_name,
             # "order_id":order_id,
-            # "user_name":user_name,
+            "customerName":user_name,
+            "total_price":total_price,
         }
     )
+
+@authentication_classes([TokenAuthentication])
+@permission_classes([])
+def totalPrice(request):
+    print("total request user:",request.user)
+    if request.method == 'POST':
+        total_price = request.POST.get('total_price')
+        request.session['total_price'] = total_price
+        return JsonResponse({"message":"값 전달"})
+    else:
+        return JsonResponse({"message":"POST 요청이 아니거나 Ajax 요청이 아님"},status=status.HTTP_400_BAD_REQUEST)
+
 
 def success(request):
     orderId = request.GET.get('orderId')
