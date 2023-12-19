@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 스타일 시트 링크 추가 -->
+    <link rel="stylesheet" href="{% static 'SetAddressScreen.module.css' %}">
+    <script type="module" src="{% static 'SetAddressScreen.module.js' %}"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ea3c6786c0dad97afc4dcb9628196462&libraries=services"></script>
+    <title>Set Address Screen</title>
+</head>
+
+<body>
+    {% if user.is_authenticated %}
+    <div class="setaddressscreen">
+        <div class="filters">
+            <div class="action">
+                <div class="buttonPrimary">
+                    <div class="leftIcon">
+                        <div class="fill"></div>
+                    </div>
+
+                    <button onclick="saveAddress()" class="btn btn-primary">주소 저장</button>
+
+                    <div class="rightIcon">
+                        <div class="fill"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="filters1">
+                <div class="search">
+                    <!-- <div class="fill2"></div> -->
+                </div>
+                <div class="listItem">
+                    <div class="content">
+                        <div class="title">
+                        </div>
+                        <!-- 도로명 주소 입력 -->
+                        <label for="sample5_address">도로명 주소:</label>
+                        <input type="text" id="sample5_address" placeholder="도로명 주소">
+                        <input type="button" onclick="sample5_execDaumPostcode()" value="도로명 주소 검색"><br>
+
+                        <div class="description">xxxx xxxx xxxx 9876</div>
+                    </div>
+                    <div class="badge">
+                        <div class="div">1</div>
+                    </div>
+                </div>
+                <img class="dividerIcon" alt="" src="/divider.svg" />
+                <div class="listItem">
+                    <div class="content">
+                        <div class="title">
+                            <label for="sample5_detail_address" class="title">상세 주소:</label>
+                            <input type="text" id="sample5_detail_address" placeholder="상세 주소"><br>
+                        </div>
+                        <div class="description">xxxx xxxx xxxx 9876</div>
+                    </div>
+                    <div class="badge">
+                        <div class="div">2</div>
+                    </div>
+                    <div class="rightButton">
+                        <!-- <div class="fill3"></div> -->
+                    </div>
+                </div>
+                <img class="dividerIcon" alt="" src="/divider.svg" />
+                <img class="dividerIcon2" alt="" src="/divider1.svg" />
+            </div>
+            <div class="navBar">
+
+                <div class="rightButton1">Home</div>
+                <div class="rightButton2">Clear All</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var mapContainer = document.getElementById('map');
+        var mapOption = {
+            center: new daum.maps.LatLng(37.537187, 127.005476),
+            level: 5
+        };
+
+        var map = new daum.maps.Map(mapContainer, mapOption);
+        var geocoder = new daum.maps.services.Geocoder();
+        var marker = new daum.maps.Marker({
+            position: new daum.maps.LatLng(37.537187, 127.005476),
+            map: map
+        });
+
+        function sample5_execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function (data) {
+                    var roadAddress = data.roadAddress; // 도로명 주소
+                    var detailAddress = ""; // 초기에는 상세 주소를 빈 문자열로 둡니다.
+
+                    // 주소 정보를 해당 필드에 넣습니다.
+                    document.getElementById("sample5_address").value = roadAddress;
+
+                    // 도로명 주소로 상세 정보를 검색
+                    geocoder.addressSearch(data.roadAddress, function (results, status) {
+                        if (status === daum.maps.services.Status.OK) {
+                            var result = results[0];
+                            var coords = new daum.maps.LatLng(result.y, result.x);
+
+                            mapContainer.style.display = "block";
+                            map.relayout();
+                            map.setCenter(coords);
+                            marker.setPosition(coords);
+
+                            document.getElementById("sample5_address").blur();
+                        }
+                    });
+                }
+            }).open();
+        }
+
+        function saveAddress() {
+            var roadAddress = document.getElementById("sample5_address").value;
+            var detailAddress = document.getElementById("sample5_detail_address").value;
+
+            // 주소 정보를 서버에 전송하여 저장하는 AJAX 요청
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/user/address/create/", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+            // 수정: 필드 이름 변경
+            var data = JSON.stringify({
+                address: roadAddress + " " + detailAddress
+            });
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        alert("주소가 성공적으로 저장되었습니다.");
+                    } else {
+                        alert("주소 저장에 실패했습니다. 다시 시도해주세요.");
+                    }
+                }
+            };
+
+            xhr.send(data);
+        }
+    </script>
+    {% else %}
+    <p>로그인이 필요한 서비스입니다. 로그인 후 이용해주세요.</p>
+    {% endif %}
+</body>
+
+</html>
