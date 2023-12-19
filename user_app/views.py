@@ -2,7 +2,7 @@
 from django.http import JsonResponse
 from django.views import View
 
-from rest_framework import generics, status,permissions
+from rest_framework import generics, status,permissions,authentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
@@ -24,21 +24,26 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
-        serializer.save(is_restaurant_admin=self.request.data.get('is_restaurant_admin',False))
-        # token, created = Token.objects.get_or_create(user=user)
-        # return Response({'token':token.key})
+        user = serializer.save(is_restaurant_admin=self.request.data.get('is_restaurant_admin',False))
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token':token.key})
     
 # POST
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
     def post(self, request):
+
         user = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception = True)
-        print(serializer)
         token = serializer.validated_data
-        return Response({"token":token.key,"id":user.id,"ceo":user.is_restaurant_admin}, status = status.HTTP_200_OK)
+
+        print("token:",token)
+        return Response({"token":token.key,"id":user.id}, status = status.HTTP_200_OK)
 
 
     
@@ -58,6 +63,16 @@ class CustomUserListView(generics.ListAPIView):
 
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+    
+class CurrentUserDetailView(generics.RetrieveAPIView):
+    serializer_class = CustomUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self,request,*args,**kwargs):
+        user = request.user
+        serializer = self.serializer_class(user)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
     
 # ============================================================
 # Address List Create View
@@ -98,6 +113,8 @@ class AddressRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
         serializer.save()
 
+    # perform은 destroy 메서드를 재정의하여
+    # 삭제 후 추가 작업이 필요한 경우에 사용
     def perform_destroy(self, instance):
         instance.delete()
         return Response({"message": "주소가 성공적으로 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
