@@ -1,6 +1,6 @@
 from rest_framework import routers
 from django.urls import path, include
-
+from .views import QrcodeAPIView
 from . import views
 
 # 다른 앱과 URL 별칭이 겹치지 않도록 app name 설정
@@ -16,9 +16,13 @@ router.register(r'menu-images', views.MenuImageViewSet, basename='menu-images')
 urlpatterns = [
     path('api/',include(router.urls)),
 
-    
+     
     path('restaurants/',views.RestaurantListView.as_view(),name='restaurants-list'),
     path('restaurants/<int:pk>/',views.RestaurantDetailView.as_view(),name='restaurants-detail'),
+    
+    
+    path('qrcode/', views.QrcodeAPIView.as_view(), name='qrcode'),
+    path('qrcode/read/verify/', views.VerifyQrcodeAPIView.as_view(), name='qrcode-verify')
 ]
 
 # MenuImage

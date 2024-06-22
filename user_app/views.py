@@ -1,6 +1,8 @@
 # TEST 용도
 from django.http import JsonResponse
-from django.views import View
+from django.views import  View
+from django.views.generic import TemplateView
+
 
 from rest_framework import generics, status,permissions,authentication
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -101,6 +103,17 @@ class AddressListCreateView(generics.ListCreateAPIView):
         else:
             return Response({"message":"식당 관리자 계정으로는 주소를 추가 할 수 없습니다."},status=status.HTTP_403_FORBIDDEN)
         return super().create(request,*args,**kwargs)
+    
+
+# 주소 템플릿 뷰
+class AddressTemplateView(TemplateView):
+    template_name = 'address/address.html'
+    
+    
+    
+    
+
+
 
 # ============================================================
 # Address Retrieve Update Destroy View
